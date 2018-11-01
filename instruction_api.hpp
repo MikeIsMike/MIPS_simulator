@@ -1,9 +1,14 @@
 
 
 //////////////////////////MACROS//////////////////////////////////////////////////////////
-const int FUNCT_MASK = 63;
+const int FUNCT_MASK     = 63;
+const int REG_MASK       = 31;
+const int IMMEDIATE_MASK = 65535;
 
-
+uint32_t         INST[4194304];
+int32_t          REG[32];
+int32_t          DATA_MEM[16777216];
+const uint32_t   ADDR_NULL = 0;
 
 
 
@@ -41,4 +46,6 @@ int mov_instruction(const uint32_t instruction, const char type);
 int branch_instruction(const uint32_t instruction, const char type);
 
 int load_instruction(const uint32_t instruction, const char type);
+
+int set_instruction(const uint32_t instruction, const char type);
 
