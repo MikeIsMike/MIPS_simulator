@@ -1,14 +1,16 @@
 
 
 //////////////////////////MACROS//////////////////////////////////////////////////////////
-const int FUNCT_MASK     = 63;
-const int REG_MASK       = 31;
-const int IMMEDIATE_MASK = 65535;
+extern const int FUNCT_MASK;
+extern const int REG_MASK;
+extern const int IMMEDIATE_MASK;
 
-uint32_t         INST[4194304];
-int32_t          REG[32];
-int32_t          DATA_MEM[16777216];
-const uint32_t   ADDR_NULL = 0;
+extern uint32_t         INST[4194304];
+extern int32_t          REG[32];
+extern int32_t          DATA_MEM[16777216];
+extern const uint32_t   ADDR_NULL;
+extern int32_t          BRANCH_DELAY;
+extern int32_t          PROG_COUNTER;
 
 
 
@@ -48,4 +50,10 @@ int branch_instruction(const uint32_t instruction, const char type);
 int load_instruction(const uint32_t instruction, const char type);
 
 int set_instruction(const uint32_t instruction, const char type);
+
+int32_t sign_extend_immediate(const uint32_t instruction);
+
+bool check_overflow(int32_t add1, int32_t add2);
+
+bool check_instruction_address(int32_t address);
 
