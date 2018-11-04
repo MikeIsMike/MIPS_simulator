@@ -18,6 +18,7 @@ int32_t          PROG_COUNTER = 0;
 int sort_I(const uint32_t instruction, const char type){
     int return_code;
     switch(instruction >> 26){
+        case 1 :
         case 4 :
         case 5 :
         case 6 :
@@ -42,7 +43,19 @@ int sort_I(const uint32_t instruction, const char type){
             return_code = xor_instruction(instruction, type);
             break;
         case 15 :
+        case 32 :
+        case 33 :
+        case 34 :
+        case 35 :
+        case 36 :
+        case 37 :
+        case 38 :
             return_code = load_instruction(instruction, type);
+            break;
+        case 40 :
+        case 41 :
+        case 43 :
+            return_code = store_instruction(instruction, type);
             break;
     }
     return return_code;
@@ -304,7 +317,40 @@ int load_instruction(const uint32_t instruction, const char type){
 
 ////////////////////////////////set_instruction///////////////////////////////////////////
 int set_instruction(const uint32_t instruction, const char type){
-    return 0;
+    uint32_t rd, rs, rt;
+    uint32_t rs_val, rt_val;
+    int return_code;
+    switch(type){
+        case 'R' :
+            switch(instruction & FUNCT_MASK){
+                case 42 :
+                    //SLT
+                    break;
+                case 43 :
+                    //SLTU
+                    rs = (instruction >> 21) & REG_MASK;
+                    rt = (instruction >> 16) & REG_MASK;
+                    rd = (instruction >> 11) & REG_MASK;
+                    rs_val = REG[rs];
+                    rt_val = REG[rt];
+                    if(rs_val < rt_val){
+                        REG[rd] = 1;
+                    }
+                    else{
+                        REG[rd] = 0;
+                    }
+                    break;
+            }
+        case 'I' :
+            switch(instruction >> 26){
+                case 10 :
+                    //SLTI
+                    break;
+                case 11 :
+                    //SLTIU
+                    break;
+            }
+    }
 }
 
 ///////////////////////////////sign_extend_immediate//////////////////////////////////////
