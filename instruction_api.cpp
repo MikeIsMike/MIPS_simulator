@@ -229,7 +229,9 @@ int and_instruction(const uint32_t instruction, const char type){
             REG[rt] = REG[rs] & immediate;
             break;
     }
-    PROG_COUNTER++;
+    if(BRANCH_DELAY == 0){
+        PROG_COUNTER++;
+    }
     return 0;
 }
 
@@ -260,7 +262,9 @@ int or_instruction(const uint32_t instruction, const char type){
             REG[rt] = REG[rs] | immediate;
             break;
     }
-    PROG_COUNTER++;
+    if(BRANCH_DELAY == 0){
+        PROG_COUNTER++;
+    }
     return 0;
 }
 
@@ -291,7 +295,9 @@ int xor_instruction(const uint32_t instruction, const char type){
             REG[rt] = REG[rs] ^ immediate;
             break;
     }
-    PROG_COUNTER++;
+    if(BRANCH_DELAY == 0){
+        PROG_COUNTER++;
+    }
     return 0;
 }
 
@@ -317,14 +323,23 @@ int load_instruction(const uint32_t instruction, const char type){
 
 ////////////////////////////////set_instruction///////////////////////////////////////////
 int set_instruction(const uint32_t instruction, const char type){
-    uint32_t rd, rs, rt;
+    uint32_t rd, rs, rt, immediate;
     uint32_t rs_val, rt_val;
-    int return_code;
+    int return_code = 0, signed_immediate; 
     switch(type){
         case 'R' :
             switch(instruction & FUNCT_MASK){
                 case 42 :
                     //SLT
+                    rs = (instruction >> 21) & REG_MASK;
+                    rt = (instruction >> 16) & REG_MASK;
+                    rd = (instruction >> 11) & REG_MASK;
+                    if(REG[rs] < REG[rt]){
+                        REG[rd] = 1;
+                    }
+                    else{
+                        REG[rd] = 0;
+                    }
                     break;
                 case 43 :
                     //SLTU
@@ -345,12 +360,36 @@ int set_instruction(const uint32_t instruction, const char type){
             switch(instruction >> 26){
                 case 10 :
                     //SLTI
+                    rs = (instruction >> 21) & REG_MASK;
+                    rt = (instruction >> 16) & REG_MASK;
+                    signed_immediate = sign_extend_immediate(instruction);
+                    if(REG[rs] < signed_immediate){
+                        REG[rt] = 1;
+                    }
+                    else{
+                        REG[rt] = 0;
+                    }
                     break;
                 case 11 :
                     //SLTIU
+                    rs = (instruction >> 21) & REG_MASK;
+                    rt = (instruction >> 16) & REG_MASK;
+                    rs_val = REG[rs];
+                    signed_immediate = sign_extend_immediate(instruction);
+                    immediate = signed_immediate;
+                    if(rs_val < immediate){
+                        REG[rt] = 1;
+                    }
+                    else{
+                        REG[rt] = 0;
+                    }
                     break;
             }
     }
+    if(BRANCH_DELAY == 0){
+        PROG_COUNTER++;
+    }
+    return return_code;
 }
 
 ///////////////////////////////sign_extend_immediate//////////////////////////////////////
