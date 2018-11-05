@@ -3,40 +3,15 @@
 #include <fstream>
 
 #include "instruction_api.hpp"
-
 using namespace std;
 
 int main(int argc, char* argv[]){
-    ifstream file;
-    int count = 1, index = 0, i;
-    int length;
-    int k;
     int return_code;
+    int index;
     bool branching;
     int branched_error = 0;
-    uint32_t opcode, instruction;
-    unsigned int bit;
-    uint8_t b;
-    
-    file.open(argv[1], ios::binary | ios::in);
-    file.seekg(0, file.end);
-    length = file.tellg();
-    file.seekg(0, file.beg);
-    char a[length];
-    file.read(a, length);
-
-    file.close();
-    while(i < length){
-        b = a[i];
-        bit = b;
-        INST[index] = INST[index] + (bit << (32 - count*8));
-        count++;
-        if (count > 4){
-            index++;
-            count = 1;
-        }
-        i++;
-    }
+    uint32_t instruction;
+    index = MEMORY.set_instructions(argv[1]);
     
     ////////////////TESTING REGISTER VALUES///////////////////////////////////////////////
     REG[1] = 1;
@@ -46,58 +21,21 @@ int main(int argc, char* argv[]){
     REG[8] = -8;
     REG[10] = 0x10000010;
     //////////////////////////////////////////////////////////////////////////////////////
-    while(PROG_COUNTER < index && k < 3){
-        if(BRANCH_DELAY){
-            instruction = BRANCH_DELAY;
-            branching = true;
-        }
-        else{
-            instruction = INST[PROG_COUNTER];
-        }
-        //FIND OPCODE
-        opcode = instruction >> 26;
-            //SORT THROUGH 
-        switch(opcode){
-            case 0 :
-                return_code = sort_R(instruction, 'R');
-                break;
-            case 2 :
-            case 3 :
-                return_code = jump_instruction(instruction, 'J');
-                break;
-            default :
-                return_code = sort_I(instruction, 'I');
-        }
+    while(PROG_COUNTER < (index + 0x10000000)){
+
+        instruction = MEMORY.get_instruction(PROG_COUNTER);
         
-        if(branching){
-        //BRANCH_DELAY INSTRUCTION HAS BEEN EXECUTED, RESET TO PROGRAM COUNTER
-            BRANCH_DELAY = 0;
-            branching = false;
-        }
+        return_code = execute_instruction(instruction);
+
         
-        if(branched_error){
-        //THROW EXCEPTION AFTER BRANCH_DELAY INSTRUCTION IS EXECUTED
-            cout << "ERROR: " << branched_error << endl;
-            cout << "Program Counter: " << PROG_COUNTER << endl;
-            for(int j = 0; j < 32; j++){
-            cout << "Register " << j << " : " << REG[j] << endl; 
-            }
-            return branched_error;
-        }
-        
-        if(return_code && BRANCH_DELAY){
-        // IF THERE IS AN ERROR AND BRANCH DELAY, THEN MUST DELAY EXCEPTION    
-            branched_error = return_code;
-        }
-        
-        else if(return_code && BRANCH_DELAY == 0){
+        if(return_code){
         //IF THERE IS AN ERROR AND NO BRANCH DELAY, IMMEDIATELY THROW EXCEPTION  
             cout << "ERROR: " << return_code << endl;
             cout << "Program Counter: " << PROG_COUNTER << endl;
             for(int j = 0; j < 32; j++){
             cout << "Register " << j << " : " << REG[j] << endl; 
             }
-            return return_code;
+            exit(return_code);
         }
         
     }
@@ -105,6 +43,6 @@ int main(int argc, char* argv[]){
     for(int j = 0; j < 32; j++){
         cout << "Register " << j << " : " << REG[j] << endl; 
     }
-    return 0;
+    exit(0);
 }
 

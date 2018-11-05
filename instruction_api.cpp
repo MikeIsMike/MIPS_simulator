@@ -7,14 +7,10 @@ const int FUNCT_MASK     = 0b111111;
 const int REG_MASK       = 0b11111;
 const int IMMEDIATE_MASK = 0b1111111111111111;
 
-uint32_t         INST[4194304];
 int32_t          REG[32];
-int32_t          DATA_MEM[16777216];
-const uint32_t   ADDR_NULL = 0;
-int32_t          BRANCH_DELAY = 0;
-int32_t          PROG_COUNTER = 0;
-
-////////////////////////////////////sort_I////////////////////////////////////////////////
+int32_t          PROG_COUNTER = 0x10000000;
+memory           MEMORY;
+////////////////////////////////sort_I////////////////////////////////////////////////
 int sort_I(const uint32_t instruction, const char type){
     int return_code;
     switch(instruction >> 26){
@@ -61,7 +57,7 @@ int sort_I(const uint32_t instruction, const char type){
     return return_code;
 }
 
-///////////////////////////////////sort_R/////////////////////////////////////////////////
+///////////////////////////////sort_R/////////////////////////////////////////////////
 int sort_R(const uint32_t instruction, const char type){
     uint32_t funct = instruction & FUNCT_MASK;
     int return_code;
@@ -118,7 +114,7 @@ int sort_R(const uint32_t instruction, const char type){
     return return_code;
 }
 
-////////////////////////////////add_instruction///////////////////////////////////////////
+////////////////////////////add_instruction///////////////////////////////////////////
 int add_instruction(const uint32_t instruction, const char type){
     uint32_t rs, rt, rd;
     int32_t immediate;
@@ -169,16 +165,13 @@ int add_instruction(const uint32_t instruction, const char type){
                     break;
             }
     }
-    if(BRANCH_DELAY == 0){
-        PROG_COUNTER++;
-    }
     return return_code;
 }
 
-//////////////////////////////jump_instruction////////////////////////////////////////////
+//////////////////////////jump_instruction////////////////////////////////////////////
 int jump_instruction(const uint32_t instruction, const char type){
     int return_code = 0;
-    uint32_t rs;
+    uint32_t rs, branch_delay;
     switch(type){
         case 'J' :
             switch(instruction >> 26){
@@ -195,13 +188,19 @@ int jump_instruction(const uint32_t instruction, const char type){
                     //JR
                     rs = (instruction >> 21) & REG_MASK;
                     //std::cout << REG[rs] << std::endl;
-                    if(check_instruction_address(REG[rs])){
-                        BRANCH_DELAY = INST[PROG_COUNTER + 1];
-                        PROG_COUNTER = (REG[rs] - 0x10000000)/4; 
+                    if(MEMORY.check_instruction_address(REG[rs])){
+                        PROG_COUNTER = PROG_COUNTER + 4;
+                        branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                        return_code = execute_instruction(branch_delay, true);
+                        PROG_COUNTER = REG[rs] - 4; 
                     }
                     else{
-                        BRANCH_DELAY = INST[PROG_COUNTER + 1];
-                        return_code = -11;
+                        PROG_COUNTER = PROG_COUNTER + 4;
+                        branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                        return_code = execute_instruction(branch_delay, true);
+                        if(return_code != 0){
+                            return_code = -11;
+                        }
                     }
                     break;
                 case 9 :
@@ -212,7 +211,7 @@ int jump_instruction(const uint32_t instruction, const char type){
     return return_code;
 }
 
-/////////////////////////////////////and_instruction//////////////////////////////////////
+/////////////////////////////////and_instruction//////////////////////////////////////
 int and_instruction(const uint32_t instruction, const char type){
     uint32_t rs, rt, rd, immediate;
     switch(type){
@@ -229,23 +228,20 @@ int and_instruction(const uint32_t instruction, const char type){
             REG[rt] = REG[rs] & immediate;
             break;
     }
-    if(BRANCH_DELAY == 0){
-        PROG_COUNTER++;
-    }
     return 0;
 }
 
-/////////////////////////////////div_instruction//////////////////////////////////////////
+/////////////////////////////div_instruction//////////////////////////////////////////
 int div_instruction(const uint32_t instruction, const char type){
     return 0;
 }
 
-/////////////////////////////////mul_instruction//////////////////////////////////////////
+/////////////////////////////mul_instruction//////////////////////////////////////////
 int mul_instruction(const uint32_t instruction, const char type){
     return 0;
 }
 
-/////////////////////////////////or_instruction///////////////////////////////////////////
+/////////////////////////////or_instruction///////////////////////////////////////////
 int or_instruction(const uint32_t instruction, const char type){
     uint32_t rs, rt, rd, immediate;
     switch(type){
@@ -262,23 +258,21 @@ int or_instruction(const uint32_t instruction, const char type){
             REG[rt] = REG[rs] | immediate;
             break;
     }
-    if(BRANCH_DELAY == 0){
-        PROG_COUNTER++;
-    }
+
     return 0;
 }
 
-////////////////////////////////store_instruction/////////////////////////////////////////
+///////////////////////////store_instruction/////////////////////////////////////////
 int store_instruction(const uint32_t instruction, const char type){
     return 0;
 }
 
-///////////////////////////////shift_instruction//////////////////////////////////////////
+///////////////////////////shift_instruction//////////////////////////////////////////
 int shift_instruction(const uint32_t instruction, const char type){
     return 0;
 }
 
-///////////////////////////////xor_instruction////////////////////////////////////////////
+//////////////////////////xor_instruction////////////////////////////////////////////
 int xor_instruction(const uint32_t instruction, const char type){
     uint32_t rs, rt, rd, immediate;
     switch(type){
@@ -295,33 +289,30 @@ int xor_instruction(const uint32_t instruction, const char type){
             REG[rt] = REG[rs] ^ immediate;
             break;
     }
-    if(BRANCH_DELAY == 0){
-        PROG_COUNTER++;
-    }
     return 0;
 }
 
-/////////////////////////////sub_instruction//////////////////////////////////////////////
+///////////////////////sub_instruction//////////////////////////////////////////////
 int sub_instruction(const uint32_t instruction, const char type){
     return 0;
 }
 
-/////////////////////////////mov_instruction//////////////////////////////////////////////
+///////////////////////mov_instruction//////////////////////////////////////////////
 int mov_instruction(const uint32_t instruction, const char type){
     return 0;
 }
 
-////////////////////////////branch_instruction////////////////////////////////////////////
+//////////////////////branch_instruction////////////////////////////////////////////
 int branch_instruction(const uint32_t instruction, const char type){
     return 0;
 }
 
-///////////////////////////////load_instruction///////////////////////////////////////////
+/////////////////////////load_instruction///////////////////////////////////////////
 int load_instruction(const uint32_t instruction, const char type){
     return 0;
 }
 
-////////////////////////////////set_instruction///////////////////////////////////////////
+////////////////////////////set_instruction///////////////////////////////////////////
 int set_instruction(const uint32_t instruction, const char type){
     uint32_t rd, rs, rt, immediate;
     uint32_t rs_val, rt_val;
@@ -386,13 +377,10 @@ int set_instruction(const uint32_t instruction, const char type){
                     break;
             }
     }
-    if(BRANCH_DELAY == 0){
-        PROG_COUNTER++;
-    }
     return return_code;
 }
 
-///////////////////////////////sign_extend_immediate//////////////////////////////////////
+//////////////////////////sign_extend_immediate//////////////////////////////////////
 int32_t sign_extend_immediate(const uint32_t instruction){
     int32_t immediate;
     immediate = ((instruction & 0b1000000000000000) == 0) ? (instruction & IMMEDIATE_MASK) : ((instruction & IMMEDIATE_MASK) | 0xffff0000);
@@ -400,7 +388,7 @@ int32_t sign_extend_immediate(const uint32_t instruction){
     return immediate;
 }
 
-///////////////////////////////check_overflow/////////////////////////////////////////////
+/////////////////////////check_overflow/////////////////////////////////////////////
 bool check_overflow(int32_t add1, int32_t add2){
     bool overflow;
     if(add1 > 0 && add2 > 0){
@@ -426,20 +414,24 @@ bool check_overflow(int32_t add1, int32_t add2){
     return overflow;
 }
 
-///////////////////////////////check_instruction_address//////////////////////////////////
-bool check_instruction_address(int32_t address){
-    bool check;
-    if(address == ADDR_NULL){
-        cout << "1" << endl;
-        check = true;
+////////////////////////////////////branch_delay//////////////////////////////////////
+int execute_instruction(uint32_t instruction, bool branch_delay){
+    uint32_t opcode = instruction >> 26;
+    int return_code;
+            //SORT THROUGH 
+        switch(opcode){
+            case 0 :
+                return_code = sort_R(instruction, 'R');
+                break;
+            case 2 :
+            case 3 :
+                return_code = jump_instruction(instruction, 'J');
+                break;
+            default :
+                return_code = sort_I(instruction, 'I');
+        }
+    if(!branch_delay){
+        PROG_COUNTER = PROG_COUNTER + 4;
     }
-    else if(address >= 0x10000000 && address < 0x11000000){
-        cout << "2" << endl;
-        check = true;
-    }
-    else{
-        cout << "3" << endl;
-        check = false;
-    }
-    return check;
+    return return_code;
 }
