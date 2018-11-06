@@ -110,7 +110,7 @@ int sort_R(const uint32_t instruction, const char type){
             return_code = set_instruction(instruction, type);
             break;
     }
-    
+
     return return_code;
 }
 
@@ -127,7 +127,7 @@ int add_instruction(const uint32_t instruction, const char type){
                     rs = (instruction >> 21) & REG_MASK;
                     rt = (instruction >> 16) & REG_MASK;
                     rd = (instruction >> 11) & REG_MASK;
-                    if(check_overflow(REG[rs], REG[rt])){
+                    if(check_overflow_add(REG[rs], REG[rt])){
                         return_code = -10;
                     }
                     else{
@@ -149,7 +149,7 @@ int add_instruction(const uint32_t instruction, const char type){
                     rs = (instruction >> 21) & REG_MASK;
                     rt = (instruction >> 16) & REG_MASK;
                     immediate = sign_extend_immediate(instruction);
-                    if(check_overflow(REG[rs], immediate)){
+                    if(check_overflow_add(REG[rs], immediate)){
                         return_code = -10;
                     }
                     else{
@@ -192,7 +192,7 @@ int jump_instruction(const uint32_t instruction, const char type){
                         PROG_COUNTER = PROG_COUNTER + 4;
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
-                        PROG_COUNTER = REG[rs] - 4; 
+                        PROG_COUNTER = REG[rs] - 4;
                     }
                     else{
                         PROG_COUNTER = PROG_COUNTER + 4;
@@ -316,7 +316,7 @@ int load_instruction(const uint32_t instruction, const char type){
 int set_instruction(const uint32_t instruction, const char type){
     uint32_t rd, rs, rt, immediate;
     uint32_t rs_val, rt_val;
-    int return_code = 0, signed_immediate; 
+    int return_code = 0, signed_immediate;
     switch(type){
         case 'R' :
             switch(instruction & FUNCT_MASK){
@@ -384,12 +384,12 @@ int set_instruction(const uint32_t instruction, const char type){
 int32_t sign_extend_immediate(const uint32_t instruction){
     int32_t immediate;
     immediate = ((instruction & 0b1000000000000000) == 0) ? (instruction & IMMEDIATE_MASK) : ((instruction & IMMEDIATE_MASK) | 0xffff0000);
-    
+
     return immediate;
 }
 
 /////////////////////////check_overflow/////////////////////////////////////////////
-bool check_overflow(int32_t add1, int32_t add2){
+bool check_overflow_add(int32_t add1, int32_t add2){
     bool overflow;
     if(add1 > 0 && add2 > 0){
         if((add1 + add2) <= 0){
@@ -410,15 +410,43 @@ bool check_overflow(int32_t add1, int32_t add2){
     else{
         overflow = false;
     }
-    
+
     return overflow;
 }
+
+bool check_overflow_sub(int32_t sub1, int32_t sub2){
+    bool overflow;
+    if(sub1>0 && sub2<0){
+        if((sub1 - sub2) <= 0){
+            overflow = true;
+        }
+        else{
+            overflow = false;
+        }
+    }
+    else if(sub1<0 && sub2>0){
+        if((sub1-sub2) >=0){
+            overflow = true;
+        }
+        else{
+            overflow = false;
+        }
+    }
+    else{
+        overflow = false;
+    }
+
+
+
+    return overflow;
+}
+
 
 ////////////////////////////////////branch_delay//////////////////////////////////////
 int execute_instruction(uint32_t instruction, bool branch_delay){
     uint32_t opcode = instruction >> 26;
     int return_code;
-            //SORT THROUGH 
+            //SORT THROUGH
         switch(opcode){
             case 0 :
                 return_code = sort_R(instruction, 'R');
