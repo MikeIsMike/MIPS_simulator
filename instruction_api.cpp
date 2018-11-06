@@ -301,6 +301,7 @@ int sub_instruction(const uint32_t instruction, const char type){
             rs = (instruction >> 21) & REG_MASK;
             rt = (instruction >> 16) & REG_MASK;
             rd = (instruction >> 11) & REG_MASK;
+            std::cout<<"\n"<<REG[rs]<<" "<<REG[rt]<<" "<<REG[rd]<<std::endl;
             if(check_overflow_sub(REG[rs], REG[rt])){
                 return_code = -10;
             }
@@ -317,6 +318,8 @@ int sub_instruction(const uint32_t instruction, const char type){
             break;
 
     }
+
+    std::cout<< "\n"<<return_code<<std::endl;
     return return_code;
 }
 
@@ -438,7 +441,7 @@ bool check_overflow_add(int32_t add1, int32_t add2){
     return overflow;
 }
 
-bool check_overflow_sub(int32_t sub1, int32_t sub2){
+bool check_overflow_sub(int32_t sub1, int32_t sub2){//this is checking signed overflow, is that a problem? Do we need to check unsigned overflow instead?
     bool overflow;
     if(sub1>0 && sub2<0){
         if((sub1 - sub2) <= 0){
