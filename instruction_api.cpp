@@ -294,8 +294,32 @@ int xor_instruction(const uint32_t instruction, const char type){
 
 ///////////////////////sub_instruction//////////////////////////////////////////////
 int sub_instruction(const uint32_t instruction, const char type){
-    return 0;
+    uint32_t rs, rt, rd;
+    int return_code = 0;
+    switch(instruction & FUNCT_MASK){
+        case 34:
+            rs = (instruction >> 21) & REG_MASK;
+            rt = (instruction >> 16) & REG_MASK;
+            rd = (instruction >> 11) & REG_MASK;
+            if(check_overflow_sub(REG[rs], REG[rt])){
+                return_code = -10;
+            }
+            else{
+                REG[rd] = REG[rs] - REG[rt];
+                cout << rs << " " << rt << " " << rd;
+            }
+            break;
+        case 35:
+            rs = (instruction >> 21) & REG_MASK;
+            rt = (instruction >> 16) & REG_MASK;
+            rd = (instruction >> 11) & REG_MASK;
+            REG[rd] = REG[rs] - REG[rt];
+            break;
+
+    }
+    return return_code;
 }
+
 
 ///////////////////////mov_instruction//////////////////////////////////////////////
 int mov_instruction(const uint32_t instruction, const char type){
