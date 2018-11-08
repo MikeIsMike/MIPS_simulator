@@ -331,7 +331,188 @@ int mov_instruction(const uint32_t instruction, const char type){
 
 //////////////////////branch_instruction////////////////////////////////////////////
 int branch_instruction(const uint32_t instruction, const char type){
-    return 0;
+    uint32_t opcode = instruction >> 26;
+    uint32_t branch_delay;
+    int32_t rs, rt, offset; //they are all signed becuase case 1 requires signed rs.
+    int return_code;
+    switch(opcode){
+        case 4:
+            rs = (instruction >> 21) & REG_MASK;
+            rt = (instruction >> 16) & REG_MASK;
+            offset = (instruction & IMMEDIATE_MASK)<<2; //shift left by 2 to get 18 bits
+            if(rs==rt){
+                if(MEMORY.check_instruction_address(PROG_COUNTER+offset+4)){
+                    PROG_COUNTER = PROG_COUNTER + 4;
+                    branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                    return_code = execute_instruction(branch_delay, true);
+                    PROG_COUNTER = PROG_COUNTER+offset;
+                }
+                else{
+                    PROG_COUNTER = PROG_COUNTER + 4;
+                    branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                    return_code = execute_instruction(branch_delay, true);
+                    if(return_code != 0){
+                        return_code = -11;
+                    }
+                }
+            }
+            break;
+
+        case 1:
+            rs = (instruction >> 21) & REG_MASK;
+            rt = (instruction >> 16) & REG_MASK; //to distinguish BGEZ, BGEZAL and etc.
+            switch(rt){
+                case 1:
+                    if(rs>=0){
+                        if(MEMORY.check_instruction_address(PROG_COUNTER+offset+4)){
+                            PROG_COUNTER = PROG_COUNTER + 4;
+                            branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                            return_code = execute_instruction(branch_delay, true);
+                            PROG_COUNTER = PROG_COUNTER+offset;
+                        }
+                        else{
+                            PROG_COUNTER = PROG_COUNTER + 4;
+                            branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                            return_code = execute_instruction(branch_delay, true);
+                            if(return_code != 0){
+                                return_code = -11;
+                            }
+                        }
+                    }
+                    break;
+
+                case 0b10001:
+                    if(rs>=0){
+                        if(MEMORY.check_instruction_address(PROG_COUNTER+offset+4)){
+                            PROG_COUNTER = PROG_COUNTER + 4;
+                            branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                            return_code = execute_instruction(branch_delay, true);
+                            PROG_COUNTER = PROG_COUNTER+offset;
+                            REG[31] = PROG_COUNTER-offset+4;
+                        }
+                        else{
+                            PROG_COUNTER = PROG_COUNTER + 4;
+                            branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                            return_code = execute_instruction(branch_delay, true);
+                            if(return_code != 0){
+                                return_code = -11;
+                            }
+                        }
+                    }
+                    break;
+
+                case 0:
+                    rs = (instruction >> 21) & REG_MASK;
+                    offset = (instruction & IMMEDIATE_MASK)<<2; //shift left by 2 to get 18 bits
+                    if(rs<0){
+                        if(MEMORY.check_instruction_address(PROG_COUNTER+offset+4)){
+                            PROG_COUNTER = PROG_COUNTER + 4;
+                            branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                            return_code = execute_instruction(branch_delay, true);
+                            PROG_COUNTER = PROG_COUNTER+offset;
+                        }
+                        else{
+                            PROG_COUNTER = PROG_COUNTER + 4;
+                            branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                            return_code = execute_instruction(branch_delay, true);
+                            if(return_code != 0){
+                                return_code = -11;
+                            }
+                        }
+                    }
+                    break;
+
+                case 0b10000:
+                    if(rs<0){
+                        if(MEMORY.check_instruction_address(PROG_COUNTER+offset+4)){
+                            PROG_COUNTER = PROG_COUNTER + 4;
+                            branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                            return_code = execute_instruction(branch_delay, true);
+                            PROG_COUNTER = PROG_COUNTER+offset;
+                            REG[31] = PROG_COUNTER-offset+4;
+                        }
+                        else{
+                            PROG_COUNTER = PROG_COUNTER + 4;
+                            branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                            return_code = execute_instruction(branch_delay, true);
+                            if(return_code != 0){
+                                return_code = -11;
+                            }
+                        }
+                    }
+                    break;
+
+                }
+                break;
+
+
+        case 7:
+            rs = (instruction >> 21) & REG_MASK;
+            offset = (instruction & IMMEDIATE_MASK)<<2; //shift left by 2 to get 18 bits
+            if(rs>0){
+                if(MEMORY.check_instruction_address(PROG_COUNTER+offset+4)){
+                    PROG_COUNTER = PROG_COUNTER + 4;
+                    branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                    return_code = execute_instruction(branch_delay, true);
+                    PROG_COUNTER = PROG_COUNTER+offset;
+                }
+                else{
+                    PROG_COUNTER = PROG_COUNTER + 4;
+                    branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                    return_code = execute_instruction(branch_delay, true);
+                    if(return_code != 0){
+                        return_code = -11;
+                    }
+                }
+            }
+            break;
+
+        case 6:
+            rs = (instruction >> 21) & REG_MASK;
+            offset = (instruction & IMMEDIATE_MASK)<<2; //shift left by 2 to get 18 bits
+            if(rs<=0){
+                if(MEMORY.check_instruction_address(PROG_COUNTER+offset+4)){
+                    PROG_COUNTER = PROG_COUNTER + 4;
+                    branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                    return_code = execute_instruction(branch_delay, true);
+                    PROG_COUNTER = PROG_COUNTER+offset;
+                }
+                else{
+                    PROG_COUNTER = PROG_COUNTER + 4;
+                    branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                    return_code = execute_instruction(branch_delay, true);
+                    if(return_code != 0){
+                        return_code = -11;
+                    }
+                }
+            }
+            break;
+
+        case 5:
+            rs = (instruction >> 21) & REG_MASK;
+            rt = (instruction >> 16) & REG_MASK;
+            offset = (instruction & IMMEDIATE_MASK)<<2; //shift left by 2 to get 18 bits
+            if(rs!=rt){
+                if(MEMORY.check_instruction_address(PROG_COUNTER+offset+4)){
+                    PROG_COUNTER = PROG_COUNTER + 4;
+                    branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                    return_code = execute_instruction(branch_delay, true);
+                    PROG_COUNTER = PROG_COUNTER+offset;
+                }
+                else{
+                    PROG_COUNTER = PROG_COUNTER + 4;
+                    branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                    return_code = execute_instruction(branch_delay, true);
+                    if(return_code != 0){
+                        return_code = -11;
+                    }
+                }
+            }
+            break;
+
+
+    }
+    return return_code;;
 }
 
 /////////////////////////load_instruction///////////////////////////////////////////
