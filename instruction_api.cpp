@@ -301,7 +301,7 @@ int sub_instruction(const uint32_t instruction, const char type){
             rs = (instruction >> 21) & REG_MASK;
             rt = (instruction >> 16) & REG_MASK;
             rd = (instruction >> 11) & REG_MASK;
-            std::cout<<"\n"<<REG[rs]<<" "<<REG[rt]<<" "<<REG[rd]<<std::endl;
+            //std::cout<<"\n"<<REG[rs]<<" "<<REG[rt]<<" "<<REG[rd]<<std::endl;
             if(check_overflow_sub(REG[rs], REG[rt])){
                 return_code = -10;
             }
@@ -319,7 +319,7 @@ int sub_instruction(const uint32_t instruction, const char type){
 
     }
 
-    std::cout<< "\n"<<return_code<<std::endl;
+    //std::cout<< "\n"<<return_code<<std::endl;
     return return_code;
 }
 
