@@ -5,26 +5,6 @@
 
 using namespace std;
 
-///////////////////////////////check_instruction_address//////////////////////////////////
-bool memory::check_instruction_address(int32_t address){
-    bool check;
-    if((address & 0b11) == 0){
-        if(address == ADDR_NULL){
-            check = true;
-        }
-        else if(address >= 0x10000000 && address < 0x11000000){
-            check = true;
-        }
-        else{
-            check = false;
-        }
-    }
-    else{
-        check = false;
-    }
-    return check;
-}
-
 //////////////////////////////set_instructions////////////////////////////////////////////
 int memory::set_instructions(string filename){
     ifstream file;
@@ -193,7 +173,8 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
 
 /////////////////////////////////////load_unaligned_memory////////////////////////////////
 int memory::load_unaligned_memory(int32_t address, uint32_t rt, char method){
-    int return_code = 0, offset;
+    int return_code = 0, offset, index;
+    string check;
     int32_t ms_bytes, ls_bytes;
     uint32_t unsigned_shift;
     switch(method){
@@ -243,8 +224,8 @@ int memory::load_unaligned_memory(int32_t address, uint32_t rt, char method){
     return return_code;
 }
 ///////////////////////////////check_byte/////////////////////////////////////////////////
-string memory::check_byte(int32_t address, string access){
-    int check;
+string memory::check_byte(int32_t address){
+    string access;
     if(address >= 0x20000000 && address < 0x24000000){
         access = "data";
     }
