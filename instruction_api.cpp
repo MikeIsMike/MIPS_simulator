@@ -6,6 +6,11 @@ using namespace std;
 const int FUNCT_MASK     = 0b111111;
 const int REG_MASK       = 0b11111;
 const int IMMEDIATE_MASK = 0b1111111111111111;
+const int SHIFT_MASK     = 0b11111;
+const int BASE_MASK      = 0b11111;
+const int OFFSET_MASK    = 0b1111111111111111;
+const int BYTE_MASK      = 0b11111111;
+const int HALFWORD_MASK  = 0b1111111111111111;
 
 int32_t          REG[32];
 int32_t          PROG_COUNTER = 0x10000000;
@@ -188,7 +193,7 @@ int jump_instruction(const uint32_t instruction, const char type){
                     //JR
                     rs = (instruction >> 21) & REG_MASK;
                     //std::cout << REG[rs] << std::endl;
-                    if(MEMORY.check_instruction_address(REG[rs])){
+                    if(MEMORY.check_word(REG[rs]) == "inst"){
                         PROG_COUNTER = PROG_COUNTER + 4;
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
@@ -198,7 +203,7 @@ int jump_instruction(const uint32_t instruction, const char type){
                         PROG_COUNTER = PROG_COUNTER + 4;
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
-                        if(return_code != 0){
+                        if(return_code == 0){
                             return_code = -11;
                         }
                     }
@@ -264,11 +269,77 @@ int or_instruction(const uint32_t instruction, const char type){
 
 ///////////////////////////store_instruction/////////////////////////////////////////
 int store_instruction(const uint32_t instruction, const char type){
-    return 0;
+    int return_code = 0;
+    uint32_t base = (instruction >> 21) & REG_MASK;
+    uint32_t rt = (instruction >> 16) & REG_MASK;
+    int32_t offset = sign_extend_immediate(instruction);
+    int32_t address = REG[base] + offset;
+    switch(instruction >> 26){
+        case 40:
+            return_code = MEMORY.store_memory(address, REG[rt], 'B');
+            break;
+        case 41:
+            return_code = MEMORY.store_memory(address, REG[rt], 'H');
+            break;
+        case 43:
+            return_code = MEMORY.store_memory(address, REG[rt], 'W');
+            break;
+    }
+    return return_code;
 }
 
 ///////////////////////////shift_instruction//////////////////////////////////////////
 int shift_instruction(const uint32_t instruction, const char type){
+    uint32_t rs, rt, rd, shift, rt_L, rs_V;
+    switch(instruction & FUNCT_MASK){
+        case 0 :
+            //SLL
+            rt = (instruction >> 16) & REG_MASK;
+            rd = (instruction >> 11) & REG_MASK;
+            shift = (instruction >> 6) & SHIFT_MASK;
+            REG[rd] = REG[rt] << shift;
+            break;
+        case 2 :
+            //SRL
+            rt = (instruction >> 16) & REG_MASK;
+            rd = (instruction >> 11) & REG_MASK;
+            shift = (instruction >> 6) & SHIFT_MASK;
+            rt_L = REG[rt];
+            REG[rd] = rt_L >> shift;
+            break;
+        case 3 :
+            //SRA
+            rt = (instruction >> 16) & REG_MASK;
+            rd = (instruction >> 11) & REG_MASK;
+            shift = (instruction >> 6) & SHIFT_MASK;
+            REG[rd] = REG[rt] >> shift;
+            break;
+        case 4 :
+            //SLLV
+            rs = (instruction >> 21) & REG_MASK;
+            rt = (instruction >> 16) & REG_MASK;
+            rd = (instruction >> 11) & REG_MASK;
+            rs_V = REG[rs] & SHIFT_MASK;
+            REG[rd] = REG[rt] << rs_V;
+            break;
+        case 6 :
+            //SRLV
+            rs = (instruction >> 21) & REG_MASK;
+            rt = (instruction >> 16) & REG_MASK;
+            rd = (instruction >> 11) & REG_MASK;
+            rs_V = REG[rs] & SHIFT_MASK;
+            rt_L = REG[rt];
+            REG[rd] = rt_L >> rs_V;
+            break;
+        case 7 :
+            //SRAV
+            rs = (instruction >> 21) & REG_MASK;
+            rt = (instruction >> 16) & REG_MASK;
+            rd = (instruction >> 11) & REG_MASK;
+            rs_V = REG[rs] & SHIFT_MASK;
+            REG[rd] = REG[rt] >> rs_V;
+            break;
+    }
     return 0;
 }
 
@@ -309,6 +380,38 @@ int branch_instruction(const uint32_t instruction, const char type){
 
 /////////////////////////load_instruction///////////////////////////////////////////
 int load_instruction(const uint32_t instruction, const char type){
+    int return_code = 0;
+    uint32_t base = (instruction >> 21) & REG_MASK;
+    uint32_t rt = (instruction >> 16) & REG_MASK;
+    int32_t offset = sign_extend_immediate(instruction);
+    int32_t address = REG[base] + offset;
+    switch(instruction >> 26){
+        case 15:
+            //LUI
+            break;
+        case 32:
+            //LB
+            MEMORY.load_memory(address, rt, 'B', true);
+            break;
+        case 33:
+            //LH
+            break;
+        case 34:
+            //LWL
+            break;
+        case 35:
+            //LW
+            break;
+        case 36:
+            //LBU
+            break;
+        case 37:
+            //LHU
+            break;
+        case 38:
+            //LWR
+            break;
+    }
     return 0;
 }
 

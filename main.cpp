@@ -14,11 +14,9 @@ int main(int argc, char* argv[]){
     index = MEMORY.set_instructions(argv[1]);
     
     ////////////////TESTING REGISTER VALUES///////////////////////////////////////////////
-    REG[1] = 1;
-    REG[2] = 2;
-    REG[3] = 3;
-    REG[4] = 4;
-    REG[8] = -8;
+    REG[1] = -1000;
+    REG[2] = 1000;
+    REG[3] = 0x20000000;
     REG[10] = 0x10000010;
     //////////////////////////////////////////////////////////////////////////////////////
     while(PROG_COUNTER < (index + 0x10000000)){
@@ -27,7 +25,6 @@ int main(int argc, char* argv[]){
         
         return_code = execute_instruction(instruction);
 
-        
         if(return_code){
         //IF THERE IS AN ERROR AND NO BRANCH DELAY, IMMEDIATELY THROW EXCEPTION  
             cout << "ERROR: " << return_code << endl;
