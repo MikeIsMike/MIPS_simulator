@@ -266,7 +266,7 @@ int jump_instruction(const uint32_t instruction, const char type){
                     if(MEMORY.check_word(REG[rs]) == "inst"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
-                        PROG_COUNTER = REG[rs] - 4; 
+                        PROG_COUNTER = REG[rs] - 4;
                     }
                     else if(MEMORY.check_word(address) == "null"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
@@ -510,7 +510,7 @@ int sub_instruction(const uint32_t instruction, const char type){
 ///////////////////////mov_instruction//////////////////////////////////////////////
 int mov_instruction(const uint32_t instruction, const char type){
     int return_code;
-    uint32_t rd = (instruction >> 11) & REG_MASK; 
+    uint32_t rd = (instruction >> 11) & REG_MASK;
     uint32_t rs = (instruction >> 21) & REG_MASK;
     switch(instruction & FUNCT_MASK){
         case 16:
@@ -535,7 +535,7 @@ int mov_instruction(const uint32_t instruction, const char type){
 
 //////////////////////branch_instruction////////////////////////////////////////////
 int branch_instruction(const uint32_t instruction, const char type){
-    uint32_t opcode = instruction >> 26;
+    /*uint32_t opcode = instruction >> 26;
     uint32_t branch_delay;
     int32_t rs, rt, offset; //they are all signed becuase case 1 requires signed rs.
     int return_code;
@@ -716,7 +716,7 @@ int branch_instruction(const uint32_t instruction, const char type){
 
 
     }
-    return return_code;;
+    return return_code; */
 }
 
 /////////////////////////load_instruction///////////////////////////////////////////
@@ -897,7 +897,7 @@ bool check_overflow_sub(int32_t sub1, int32_t sub2){//this is checking signed ov
 int execute_instruction(uint32_t instruction, bool branch_delay){
     uint32_t opcode = instruction >> 26;
     int return_code;
-            //SORT THROUGH 
+            //SORT THROUGH
         switch(opcode){
             case 0 :
                 return_code = sort_R(instruction, 'R');
