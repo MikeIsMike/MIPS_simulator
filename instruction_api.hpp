@@ -10,9 +10,11 @@ extern const int OFFSET_MASK;
 extern const int BYTE_MASK;
 extern const int HALFWORD_MASK;
 
-extern int32_t   REG[32];
-extern int32_t   PROG_COUNTER;
-extern memory    MEMORY;
+extern int32_t      REG[32];
+extern int32_t      PROG_COUNTER;
+extern int32_t      HI;
+extern int32_t      LO;
+extern memory       MEMORY;
 
 
 

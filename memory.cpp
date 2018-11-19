@@ -32,6 +32,7 @@ int memory::set_instructions(string filename){
         }
         i++;
     }
+    return index;
 }
 
 //////////////////////////////get_instruction/////////////////////////////////////////////
@@ -44,35 +45,61 @@ uint32_t memory::get_instruction(int32_t address){
 //////////////////////////////store_memory////////////////////////////////////////////////
 int memory::store_memory(int32_t address, int32_t rt, char method){
     int return_code = 0, index, byte_offset, half_offset;
+    string check;
     switch(method){
         case 'B':
-            if(MEMORY.check_byte(address) == "data"){
+            check = MEMORY.check_byte(address);
+            if(check == "data"){
                 index = (address - 0x20000000)/4;
                 byte_offset = (address - 0x20000000)%4;
                 rt = rt & BYTE_MASK;
                 DATA_MEM[index] = DATA_MEM[index] & ~(BYTE_MASK << (24 - byte_offset*8));
                 DATA_MEM[index] = DATA_MEM[index] | (rt << (24 - byte_offset*8));
             }
+            else if(check == "putc"){
+                if(address == 0x30000007){
+                    char c = rt & BYTE_MASK;
+                    putchar(c);
+                }
+                else{
+                    putchar(0);
+                }
+            }
             else{
                 return_code = -11;
             }
             break;
         case 'H':
-            if(MEMORY.check_half(address) == "data"){
+            check = MEMORY.check_half(address);
+            if(check == "data"){
                 index = (address - 0x20000000)/4;
                 half_offset = (address - 0x20000000)%4;
                 rt = rt & HALFWORD_MASK;
                 DATA_MEM[index] = DATA_MEM[index] & ~(HALFWORD_MASK << (24 -half_offset*8));
                 DATA_MEM[index] = DATA_MEM[index] | (rt << (24 - half_offset*8));
             }
+            else if(check == "putc"){
+                if(address == 0x30000006){
+                    char c = rt & BYTE_MASK;
+                    putchar(c);
+                }
+                else{
+                    putchar(0);
+                }
+            }
             else{
                 return_code = -11;
             }
             break;
         case 'W':
-            if(MEMORY.check_word(address) == "data"){
+            check = MEMORY.check_word(address);
+            if(check == "data"){
                 index = (address - 0x20000000)/4;
                 DATA_MEM[index] = rt;
+            }
+            else if(check == "putc"){
+                char c = rt & BYTE_MASK;
+                putchar(c);
             }
             else{
                 return_code = -11;
@@ -120,6 +147,42 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                 }
                 REG[rt] = data;
             }
+            else if(check == "getc"){
+                if(address == 0x30000003){
+                    if(sign){
+                        byte = getchar();
+                        data = byte;
+                        REG[rt] = data;
+                    }
+                    else{
+                        u_byte = getchar();
+                        data = u_byte;
+                        REG[rt] = data;
+                    }
+                }
+                else{
+                    if(sign){
+                        byte = getchar();
+                        if(byte == -1){
+                            data = byte;
+                            REG[rt] = data;
+                        }
+                        else{
+                            REG[rt] = 0;
+                        }
+                    }
+                    else{
+                        u_byte = getchar();
+                        if(u_byte == 0xFF){
+                            data = u_byte;
+                            REG[rt] = data;
+                        }
+                        else{
+                            REG[rt] = 0;
+                        }
+                    }
+                }
+            }
             else{
                 return_code = -11;
             }
@@ -152,6 +215,45 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                 }
                 REG[rt] = data;
             }
+            else if(check == "getc"){
+                if(address == 0x30000002){
+                    u_byte = getchar();
+                    data = u_byte;
+                    if(u_byte == 0xFF){
+                        if(sign){
+                            REG[rt] = 0xFFFFFFFF;
+                        }
+                        else{
+                            REG[rt] = 0x0000FFFF;
+                        }
+                    }
+                    else{
+                        REG[rt] = data;
+                    }
+                }
+                else{
+                    if(sign){
+                        halfword = getchar();
+                        if(halfword == -1){
+                            data = halfword;
+                            REG[rt] = data;
+                        }
+                        else{
+                            REG[rt] = 0;
+                        }
+                    }
+                    else{
+                        u_halfword = getchar();
+                        if(u_halfword == 0xFFFF){
+                            data = u_halfword;
+                            REG[rt] = data;
+                        }
+                        else{
+                            REG[rt] = 0;
+                        }
+                    }
+                }
+            }
             else{
                 return_code = -11;
             }
@@ -164,6 +266,15 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
             else if(check == "inst"){
                 REG[rt] = INST[index];
             }
+            else if(check == "getc"){
+                u_byte = getchar();
+                if(u_byte == 0xFF){
+                    REG[rt] = 0xFFFFFFFF;
+                }
+                else{
+                    REG[rt] = u_byte;
+                }
+            } 
             else{
                 return_code = -11;
             }
@@ -229,10 +340,10 @@ string memory::check_byte(int32_t address){
     if(address >= 0x20000000 && address < 0x24000000){
         access = "data";
     }
-    else if(address == 0x30000004){
+    else if(address >= 0x30000004 && address < 0x30000007){
         access = "putc";
     }
-    else if(address == 0x30000000){
+    else if(address >= 0x30000000 && address < 0x30000004){
         access = "getc";
     }
     else if(address >= 0x10000000 && address < 0x11000000){
@@ -250,10 +361,10 @@ string memory::check_half(int32_t address){
         if(address >= 0x20000000 && address < 0x24000000){
             access = "data";
         }
-        else if(address == 0x30000004){
+        else if(address >= 0x30000004 && address < 0x30000007){
             access = "putc";
         }
-        else if(address == 0x30000000){
+        else if(address >= 0x30000000 && address < 0x30000004){
             access = "getc";
         }
         else if(address >= 0x10000000 && address < 0x11000000){
@@ -275,14 +386,17 @@ string memory::check_word(int32_t address){
         if(address >= 0x20000000 && address < 0x24000000){
             access = "data";
         }
-        else if(address == 0x30000004){
+        else if(address >= 0x30000004 && address < 0x30000007){
             access = "putc";
         }
-        else if(address == 0x30000000){
+        else if(address >= 0x30000000 && address < 0x30000004){
             access = "getc";
         }
         else if(address >= 0x10000000 && address < 0x11000000){
             access = "inst";
+        }
+        else if(address == 0x00000000){
+            access = "null";
         }
         else{
             access = "error";
