@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 
 #include "instruction_api.hpp"
 using namespace std;
@@ -6,9 +7,16 @@ using namespace std;
 const int FUNCT_MASK     = 0b111111;
 const int REG_MASK       = 0b11111;
 const int IMMEDIATE_MASK = 0b1111111111111111;
+const int SHIFT_MASK     = 0b11111;
+const int BASE_MASK      = 0b11111;
+const int OFFSET_MASK    = 0b1111111111111111;
+const int BYTE_MASK      = 0b11111111;
+const int HALFWORD_MASK  = 0b1111111111111111;
 
 int32_t          REG[32];
 int32_t          PROG_COUNTER = 0x10000000;
+int32_t          HI;
+int32_t          LO;
 memory           MEMORY;
 ////////////////////////////////sort_I////////////////////////////////////////////////
 int sort_I(const uint32_t instruction, const char type){
@@ -171,15 +179,58 @@ int add_instruction(const uint32_t instruction, const char type){
 //////////////////////////jump_instruction////////////////////////////////////////////
 int jump_instruction(const uint32_t instruction, const char type){
     int return_code = 0;
-    uint32_t rs, branch_delay;
+    uint32_t instr_index;
+    uint32_t rs, branch_delay, rd;
+    int32_t address;
     switch(type){
         case 'J' :
             switch(instruction >> 26){
                 case 2 :
                     //J
+                    instr_index = (instruction << 6) >> 4;
+                    PROG_COUNTER = PROG_COUNTER + 4;
+                    address = (PROG_COUNTER & 0xF0000000) | instr_index;
+                    if(MEMORY.check_word(address) == "inst"){
+                        branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                        return_code = execute_instruction(branch_delay, true);
+                        PROG_COUNTER = address - 4;
+                    }
+                    else if(MEMORY.check_word(address) == "null"){
+                        branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                        return_code = execute_instruction(branch_delay, true);
+                        PROG_COUNTER = address - 4;
+                    }
+                    else{
+                        branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                        return_code = execute_instruction(branch_delay, true);
+                        if(return_code == 0){
+                            return_code = -11;
+                        }
+                    }
                     break;
                 case 3 :
                     //JAL
+                    REG[31] = PROG_COUNTER + 8;
+                    instr_index = (instruction << 6) >> 4;
+                    PROG_COUNTER = PROG_COUNTER + 4;
+                    address = (PROG_COUNTER & 0xF0000000) | instr_index;
+                    if(MEMORY.check_word(address) == "inst"){
+                        branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                        return_code = execute_instruction(branch_delay, true);
+                        PROG_COUNTER = address - 4;
+                    }
+                    else if(MEMORY.check_word(address) == "null"){
+                        branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                        return_code = execute_instruction(branch_delay, true);
+                        PROG_COUNTER = address - 4;
+                    }
+                    else{
+                        branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                        return_code = execute_instruction(branch_delay, true);
+                        if(return_code == 0){
+                            return_code = -11;
+                        }
+                    }
                     break;
             }
         case 'R' :
@@ -187,24 +238,48 @@ int jump_instruction(const uint32_t instruction, const char type){
                 case 8 :
                     //JR
                     rs = (instruction >> 21) & REG_MASK;
-                    //std::cout << REG[rs] << std::endl;
-                    if(MEMORY.check_instruction_address(REG[rs])){
-                        PROG_COUNTER = PROG_COUNTER + 4;
+                    PROG_COUNTER = PROG_COUNTER + 4;
+                    if(MEMORY.check_word(REG[rs]) == "inst"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
                         PROG_COUNTER = REG[rs] - 4;
                     }
-                    else{
-                        PROG_COUNTER = PROG_COUNTER + 4;
+                    else if(MEMORY.check_word(address) == "null"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
-                        if(return_code != 0){
+                        PROG_COUNTER = address - 4;
+                    }
+                    else{
+                        branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                        return_code = execute_instruction(branch_delay, true);
+                        if(return_code == 0){
                             return_code = -11;
                         }
                     }
                     break;
                 case 9 :
                     //JALR
+                    rs = (instruction >> 21) & REG_MASK;
+                    rd = (instruction >> 11) & REG_MASK;
+                    REG[rd] = PROG_COUNTER + 8;
+                    PROG_COUNTER = PROG_COUNTER + 4;
+                    if(MEMORY.check_word(REG[rs]) == "inst"){
+                        branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                        return_code = execute_instruction(branch_delay, true);
+                        PROG_COUNTER = REG[rs] - 4; 
+                    }
+                    else if(MEMORY.check_word(address) == "null"){
+                        branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                        return_code = execute_instruction(branch_delay, true);
+                        PROG_COUNTER = address - 4;
+                    }
+                    else{
+                        branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+                        return_code = execute_instruction(branch_delay, true);
+                        if(return_code == 0){
+                            return_code = -11;
+                        }
+                    }
                     break;
             }
     }
@@ -233,12 +308,54 @@ int and_instruction(const uint32_t instruction, const char type){
 
 /////////////////////////////div_instruction//////////////////////////////////////////
 int div_instruction(const uint32_t instruction, const char type){
-    return 0;
+    int return_code = 0;
+    uint32_t rs,rt;
+    uint32_t u_regRs, u_regRt;
+    rs = (instruction >> 21) & REG_MASK;
+    rt = (instruction >> 16) & REG_MASK;
+    switch(instruction & FUNCT_MASK){
+        case 26:
+            //DIV
+            LO = REG[rs]/REG[rt];
+            HI = REG[rs]%REG[rt];
+            break;
+        case 27:
+            //DIVU
+            u_regRs = REG[rs];
+            u_regRt = REG[rt];
+            LO = u_regRs/u_regRt;
+            HI = u_regRs%u_regRt;
+            break;
+    }
+    return return_code;
 }
 
 /////////////////////////////mul_instruction//////////////////////////////////////////
 int mul_instruction(const uint32_t instruction, const char type){
-    return 0;
+    int return_code = 0;
+    uint32_t rs,rt;
+    uint32_t u_regRs, u_regRt;
+    uint64_t u_mul;
+    int64_t mul;
+    rs = (instruction >> 21) & REG_MASK;
+    rt = (instruction >> 16) & REG_MASK;
+    switch(instruction & FUNCT_MASK){
+        case 24:
+            //MULT
+            mul = REG[rs]*REG[rt];
+            HI = (mul >> 32) & 0xFFFFFFFF;
+            LO = mul & 0xFFFFFFFF;
+            break;
+        case 25:
+            //MULTU
+            u_regRs = REG[rs];
+            u_regRt = REG[rt];
+            u_mul = u_regRs*u_regRt;
+            HI = (u_mul >> 32) & 0xFFFFFFFF;
+            LO = u_mul & 0xFFFFFFFF;
+            break;
+    }
+    return return_code;
 }
 
 /////////////////////////////or_instruction///////////////////////////////////////////
@@ -264,11 +381,77 @@ int or_instruction(const uint32_t instruction, const char type){
 
 ///////////////////////////store_instruction/////////////////////////////////////////
 int store_instruction(const uint32_t instruction, const char type){
-    return 0;
+    int return_code = 0;
+    uint32_t base = (instruction >> 21) & REG_MASK;
+    uint32_t rt = (instruction >> 16) & REG_MASK;
+    int32_t offset = sign_extend_immediate(instruction);
+    int32_t address = REG[base] + offset;
+    switch(instruction >> 26){
+        case 40:
+            return_code = MEMORY.store_memory(address, REG[rt], 'B');
+            break;
+        case 41:
+            return_code = MEMORY.store_memory(address, REG[rt], 'H');
+            break;
+        case 43:
+            return_code = MEMORY.store_memory(address, REG[rt], 'W');
+            break;
+    }
+    return return_code;
 }
 
 ///////////////////////////shift_instruction//////////////////////////////////////////
 int shift_instruction(const uint32_t instruction, const char type){
+    uint32_t rs, rt, rd, shift, rt_L, rs_V;
+    switch(instruction & FUNCT_MASK){
+        case 0 :
+            //SLL
+            rt = (instruction >> 16) & REG_MASK;
+            rd = (instruction >> 11) & REG_MASK;
+            shift = (instruction >> 6) & SHIFT_MASK;
+            REG[rd] = REG[rt] << shift;
+            break;
+        case 2 :
+            //SRL
+            rt = (instruction >> 16) & REG_MASK;
+            rd = (instruction >> 11) & REG_MASK;
+            shift = (instruction >> 6) & SHIFT_MASK;
+            rt_L = REG[rt];
+            REG[rd] = rt_L >> shift;
+            break;
+        case 3 :
+            //SRA
+            rt = (instruction >> 16) & REG_MASK;
+            rd = (instruction >> 11) & REG_MASK;
+            shift = (instruction >> 6) & SHIFT_MASK;
+            REG[rd] = REG[rt] >> shift;
+            break;
+        case 4 :
+            //SLLV
+            rs = (instruction >> 21) & REG_MASK;
+            rt = (instruction >> 16) & REG_MASK;
+            rd = (instruction >> 11) & REG_MASK;
+            rs_V = REG[rs] & SHIFT_MASK;
+            REG[rd] = REG[rt] << rs_V;
+            break;
+        case 6 :
+            //SRLV
+            rs = (instruction >> 21) & REG_MASK;
+            rt = (instruction >> 16) & REG_MASK;
+            rd = (instruction >> 11) & REG_MASK;
+            rs_V = REG[rs] & SHIFT_MASK;
+            rt_L = REG[rt];
+            REG[rd] = rt_L >> rs_V;
+            break;
+        case 7 :
+            //SRAV
+            rs = (instruction >> 21) & REG_MASK;
+            rt = (instruction >> 16) & REG_MASK;
+            rd = (instruction >> 11) & REG_MASK;
+            rs_V = REG[rs] & SHIFT_MASK;
+            REG[rd] = REG[rt] >> rs_V;
+            break;
+    }
     return 0;
 }
 
@@ -326,7 +509,28 @@ int sub_instruction(const uint32_t instruction, const char type){
 
 ///////////////////////mov_instruction//////////////////////////////////////////////
 int mov_instruction(const uint32_t instruction, const char type){
-    return 0;
+    int return_code;
+    uint32_t rd = (instruction >> 11) & REG_MASK; 
+    uint32_t rs = (instruction >> 21) & REG_MASK;
+    switch(instruction & FUNCT_MASK){
+        case 16:
+            //MFHI
+            REG[rd] = HI;
+            break;
+        case 17:
+            //MTHI
+            HI = REG[rs];
+            break;
+        case 18:
+            //MFLO
+            REG[rd] = LO;
+            break;
+        case 19:
+            //MTLO
+            LO = REG[rs];
+            break;
+    }
+    return return_code;
 }
 
 //////////////////////branch_instruction////////////////////////////////////////////
@@ -517,6 +721,46 @@ int branch_instruction(const uint32_t instruction, const char type){
 
 /////////////////////////load_instruction///////////////////////////////////////////
 int load_instruction(const uint32_t instruction, const char type){
+    int return_code = 0;
+    uint32_t base = (instruction >> 21) & REG_MASK;
+    uint32_t rt = (instruction >> 16) & REG_MASK;
+    int32_t offset = sign_extend_immediate(instruction);
+    int32_t address = REG[base] + offset;
+    switch(instruction >> 26){
+        case 15:
+            //LUI
+            offset = offset << 16;
+            REG[rt] = offset;
+            break;
+        case 32:
+            //LB
+            MEMORY.load_memory(address, rt, 'B', true);
+            break;
+        case 33:
+            //LH
+            MEMORY.load_memory(address, rt, 'H', true);
+            break;
+        case 34:
+            //LWL
+            MEMORY.load_unaligned_memory(address, rt, 'L');
+            break;
+        case 35:
+            //LW
+            MEMORY.load_memory(address, rt, 'W', true);
+            break;
+        case 36:
+            //LBU
+            MEMORY.load_memory(address, rt, 'B', false);
+            break;
+        case 37:
+            //LHU
+            MEMORY.load_memory(address, rt, 'H', false);
+            break;
+        case 38:
+            //LWR
+            MEMORY.load_unaligned_memory(address, rt, 'R');
+            break;
+    }
     return 0;
 }
 
@@ -649,12 +893,11 @@ bool check_overflow_sub(int32_t sub1, int32_t sub2){//this is checking signed ov
     return overflow;
 }
 
-
-////////////////////////////////////branch_delay//////////////////////////////////////
+////////////////////////////////////execute_instruction///////////////////////////////////
 int execute_instruction(uint32_t instruction, bool branch_delay){
     uint32_t opcode = instruction >> 26;
     int return_code;
-            //SORT THROUGH
+            //SORT THROUGH 
         switch(opcode){
             case 0 :
                 return_code = sort_R(instruction, 'R');
