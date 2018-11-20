@@ -1,3 +1,4 @@
 
 src/simulator.o
 *.o
+testy.c

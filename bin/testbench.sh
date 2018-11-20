@@ -26,7 +26,7 @@ if [ $result -eq $EXITCODE ]; #space between square brackets are necessary
 then
     echo $NUMBER, $testname, pass, $author #author is the between first and second dots
 else
-    echo $NUMBER, $testname, fail, $author
+    echo $NUMBER, $testname, fail, $author "(expected result $result, got $EXITCODE)"
 fi
     NUMBER=$((NUMBER+1))
 done
