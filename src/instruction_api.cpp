@@ -118,7 +118,7 @@ int sort_R(const uint32_t instruction, const char type){
             return_code = set_instruction(instruction, type);
             break;
     }
-
+    
     return return_code;
 }
 
@@ -135,7 +135,7 @@ int add_instruction(const uint32_t instruction, const char type){
                     rs = (instruction >> 21) & REG_MASK;
                     rt = (instruction >> 16) & REG_MASK;
                     rd = (instruction >> 11) & REG_MASK;
-                    if(check_overflow_add(REG[rs], REG[rt])){
+                    if(check_overflow(REG[rs], REG[rt])){
                         return_code = -10;
                     }
                     else{
@@ -157,7 +157,7 @@ int add_instruction(const uint32_t instruction, const char type){
                     rs = (instruction >> 21) & REG_MASK;
                     rt = (instruction >> 16) & REG_MASK;
                     immediate = sign_extend_immediate(instruction);
-                    if(check_overflow_add(REG[rs], immediate)){
+                    if(check_overflow(REG[rs], immediate)){
                         return_code = -10;
                     }
                     else{
@@ -182,6 +182,7 @@ int jump_instruction(const uint32_t instruction, const char type){
     uint32_t instr_index;
     uint32_t rs, branch_delay, rd;
     int32_t address;
+    string check;
     switch(type){
         case 'J' :
             switch(instruction >> 26){
@@ -190,12 +191,13 @@ int jump_instruction(const uint32_t instruction, const char type){
                     instr_index = (instruction << 6) >> 4;
                     PROG_COUNTER = PROG_COUNTER + 4;
                     address = (PROG_COUNTER & 0xF0000000) | instr_index;
-                    if(MEMORY.check_word(address) == "inst"){
+                    check = MEMORY.check_word(address);
+                    if(check == "inst"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
                         PROG_COUNTER = address - 4;
                     }
-                    else if(MEMORY.check_word(address) == "null"){
+                    else if(check == "null"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
                         PROG_COUNTER = address - 4;
@@ -214,12 +216,13 @@ int jump_instruction(const uint32_t instruction, const char type){
                     instr_index = (instruction << 6) >> 4;
                     PROG_COUNTER = PROG_COUNTER + 4;
                     address = (PROG_COUNTER & 0xF0000000) | instr_index;
-                    if(MEMORY.check_word(address) == "inst"){
+                    check = MEMORY.check_word(address);
+                    if(check == "inst"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
                         PROG_COUNTER = address - 4;
                     }
-                    else if(MEMORY.check_word(address) == "null"){
+                    else if(check == "null"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
                         PROG_COUNTER = address - 4;
@@ -239,12 +242,13 @@ int jump_instruction(const uint32_t instruction, const char type){
                     //JR
                     rs = (instruction >> 21) & REG_MASK;
                     PROG_COUNTER = PROG_COUNTER + 4;
-                    if(MEMORY.check_word(REG[rs]) == "inst"){
+                    check = MEMORY.check_word(REG[rs]);
+                    if(check == "inst"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
-                        PROG_COUNTER = REG[rs] - 4;
+                        PROG_COUNTER = REG[rs] - 4; 
                     }
-                    else if(MEMORY.check_word(address) == "null"){
+                    else if(check == "null"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
                         PROG_COUNTER = address - 4;
@@ -263,12 +267,13 @@ int jump_instruction(const uint32_t instruction, const char type){
                     rd = (instruction >> 11) & REG_MASK;
                     REG[rd] = PROG_COUNTER + 8;
                     PROG_COUNTER = PROG_COUNTER + 4;
-                    if(MEMORY.check_word(REG[rs]) == "inst"){
+                    check = MEMORY.check_word(REG[rs]);
+                    if(check == "inst"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
-                        PROG_COUNTER = REG[rs] - 4;
+                        PROG_COUNTER = REG[rs] - 4; 
                     }
-                    else if(MEMORY.check_word(address) == "null"){
+                    else if(check == "null"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
                         PROG_COUNTER = address - 4;
@@ -477,40 +482,13 @@ int xor_instruction(const uint32_t instruction, const char type){
 
 ///////////////////////sub_instruction//////////////////////////////////////////////
 int sub_instruction(const uint32_t instruction, const char type){
-    uint32_t rs, rt, rd;
-    int return_code = 0;
-    switch(instruction & FUNCT_MASK){
-        case 34:
-            rs = (instruction >> 21) & REG_MASK;
-            rt = (instruction >> 16) & REG_MASK;
-            rd = (instruction >> 11) & REG_MASK;
-            //std::cout<<"\n"<<REG[rs]<<" "<<REG[rt]<<" "<<REG[rd]<<std::endl;
-            if(check_overflow_sub(REG[rs], REG[rt])){
-                return_code = -10;
-            }
-            else{
-                REG[rd] = REG[rs] - REG[rt];
-                cout << rs << " " << rt << " " << rd;
-            }
-            break;
-        case 35:
-            rs = (instruction >> 21) & REG_MASK;
-            rt = (instruction >> 16) & REG_MASK;
-            rd = (instruction >> 11) & REG_MASK;
-            REG[rd] = REG[rs] - REG[rt];
-            break;
-
-    }
-
-    //std::cout<< "\n"<<return_code<<std::endl;
-    return return_code;
+    return 0;
 }
-
 
 ///////////////////////mov_instruction//////////////////////////////////////////////
 int mov_instruction(const uint32_t instruction, const char type){
     int return_code;
-    uint32_t rd = (instruction >> 11) & REG_MASK;
+    uint32_t rd = (instruction >> 11) & REG_MASK; 
     uint32_t rs = (instruction >> 21) & REG_MASK;
     switch(instruction & FUNCT_MASK){
         case 16:
@@ -535,188 +513,7 @@ int mov_instruction(const uint32_t instruction, const char type){
 
 //////////////////////branch_instruction////////////////////////////////////////////
 int branch_instruction(const uint32_t instruction, const char type){
-    /*uint32_t opcode = instruction >> 26;
-    uint32_t branch_delay;
-    int32_t rs, rt, offset; //they are all signed becuase case 1 requires signed rs.
-    int return_code;
-    switch(opcode){
-        case 4:
-            rs = (instruction >> 21) & REG_MASK;
-            rt = (instruction >> 16) & REG_MASK;
-            offset = (instruction & IMMEDIATE_MASK)<<2; //shift left by 2 to get 18 bits
-            if(rs==rt){
-                if(MEMORY.check_instruction_address(PROG_COUNTER+offset+4)){
-                    PROG_COUNTER = PROG_COUNTER + 4;
-                    branch_delay = MEMORY.get_instruction(PROG_COUNTER);
-                    return_code = execute_instruction(branch_delay, true);
-                    PROG_COUNTER = PROG_COUNTER+offset;
-                }
-                else{
-                    PROG_COUNTER = PROG_COUNTER + 4;
-                    branch_delay = MEMORY.get_instruction(PROG_COUNTER);
-                    return_code = execute_instruction(branch_delay, true);
-                    if(return_code != 0){
-                        return_code = -11;
-                    }
-                }
-            }
-            break;
-
-        case 1:
-            rs = (instruction >> 21) & REG_MASK;
-            rt = (instruction >> 16) & REG_MASK; //to distinguish BGEZ, BGEZAL and etc.
-            switch(rt){
-                case 1:
-                    if(rs>=0){
-                        if(MEMORY.check_instruction_address(PROG_COUNTER+offset+4)){
-                            PROG_COUNTER = PROG_COUNTER + 4;
-                            branch_delay = MEMORY.get_instruction(PROG_COUNTER);
-                            return_code = execute_instruction(branch_delay, true);
-                            PROG_COUNTER = PROG_COUNTER+offset;
-                        }
-                        else{
-                            PROG_COUNTER = PROG_COUNTER + 4;
-                            branch_delay = MEMORY.get_instruction(PROG_COUNTER);
-                            return_code = execute_instruction(branch_delay, true);
-                            if(return_code != 0){
-                                return_code = -11;
-                            }
-                        }
-                    }
-                    break;
-
-                case 0b10001:
-                    if(rs>=0){
-                        if(MEMORY.check_instruction_address(PROG_COUNTER+offset+4)){
-                            PROG_COUNTER = PROG_COUNTER + 4;
-                            branch_delay = MEMORY.get_instruction(PROG_COUNTER);
-                            return_code = execute_instruction(branch_delay, true);
-                            PROG_COUNTER = PROG_COUNTER+offset;
-                            REG[31] = PROG_COUNTER-offset+4;
-                        }
-                        else{
-                            PROG_COUNTER = PROG_COUNTER + 4;
-                            branch_delay = MEMORY.get_instruction(PROG_COUNTER);
-                            return_code = execute_instruction(branch_delay, true);
-                            if(return_code != 0){
-                                return_code = -11;
-                            }
-                        }
-                    }
-                    break;
-
-                case 0:
-                    rs = (instruction >> 21) & REG_MASK;
-                    offset = (instruction & IMMEDIATE_MASK)<<2; //shift left by 2 to get 18 bits
-                    if(rs<0){
-                        if(MEMORY.check_instruction_address(PROG_COUNTER+offset+4)){
-                            PROG_COUNTER = PROG_COUNTER + 4;
-                            branch_delay = MEMORY.get_instruction(PROG_COUNTER);
-                            return_code = execute_instruction(branch_delay, true);
-                            PROG_COUNTER = PROG_COUNTER+offset;
-                        }
-                        else{
-                            PROG_COUNTER = PROG_COUNTER + 4;
-                            branch_delay = MEMORY.get_instruction(PROG_COUNTER);
-                            return_code = execute_instruction(branch_delay, true);
-                            if(return_code != 0){
-                                return_code = -11;
-                            }
-                        }
-                    }
-                    break;
-
-                case 0b10000:
-                    if(rs<0){
-                        if(MEMORY.check_instruction_address(PROG_COUNTER+offset+4)){
-                            PROG_COUNTER = PROG_COUNTER + 4;
-                            branch_delay = MEMORY.get_instruction(PROG_COUNTER);
-                            return_code = execute_instruction(branch_delay, true);
-                            PROG_COUNTER = PROG_COUNTER+offset;
-                            REG[31] = PROG_COUNTER-offset+4;
-                        }
-                        else{
-                            PROG_COUNTER = PROG_COUNTER + 4;
-                            branch_delay = MEMORY.get_instruction(PROG_COUNTER);
-                            return_code = execute_instruction(branch_delay, true);
-                            if(return_code != 0){
-                                return_code = -11;
-                            }
-                        }
-                    }
-                    break;
-
-                }
-                break;
-
-
-        case 7:
-            rs = (instruction >> 21) & REG_MASK;
-            offset = (instruction & IMMEDIATE_MASK)<<2; //shift left by 2 to get 18 bits
-            if(rs>0){
-                if(MEMORY.check_instruction_address(PROG_COUNTER+offset+4)){
-                    PROG_COUNTER = PROG_COUNTER + 4;
-                    branch_delay = MEMORY.get_instruction(PROG_COUNTER);
-                    return_code = execute_instruction(branch_delay, true);
-                    PROG_COUNTER = PROG_COUNTER+offset;
-                }
-                else{
-                    PROG_COUNTER = PROG_COUNTER + 4;
-                    branch_delay = MEMORY.get_instruction(PROG_COUNTER);
-                    return_code = execute_instruction(branch_delay, true);
-                    if(return_code != 0){
-                        return_code = -11;
-                    }
-                }
-            }
-            break;
-
-        case 6:
-            rs = (instruction >> 21) & REG_MASK;
-            offset = (instruction & IMMEDIATE_MASK)<<2; //shift left by 2 to get 18 bits
-            if(rs<=0){
-                if(MEMORY.check_instruction_address(PROG_COUNTER+offset+4)){
-                    PROG_COUNTER = PROG_COUNTER + 4;
-                    branch_delay = MEMORY.get_instruction(PROG_COUNTER);
-                    return_code = execute_instruction(branch_delay, true);
-                    PROG_COUNTER = PROG_COUNTER+offset;
-                }
-                else{
-                    PROG_COUNTER = PROG_COUNTER + 4;
-                    branch_delay = MEMORY.get_instruction(PROG_COUNTER);
-                    return_code = execute_instruction(branch_delay, true);
-                    if(return_code != 0){
-                        return_code = -11;
-                    }
-                }
-            }
-            break;
-
-        case 5:
-            rs = (instruction >> 21) & REG_MASK;
-            rt = (instruction >> 16) & REG_MASK;
-            offset = (instruction & IMMEDIATE_MASK)<<2; //shift left by 2 to get 18 bits
-            if(rs!=rt){
-                if(MEMORY.check_instruction_address(PROG_COUNTER+offset+4)){
-                    PROG_COUNTER = PROG_COUNTER + 4;
-                    branch_delay = MEMORY.get_instruction(PROG_COUNTER);
-                    return_code = execute_instruction(branch_delay, true);
-                    PROG_COUNTER = PROG_COUNTER+offset;
-                }
-                else{
-                    PROG_COUNTER = PROG_COUNTER + 4;
-                    branch_delay = MEMORY.get_instruction(PROG_COUNTER);
-                    return_code = execute_instruction(branch_delay, true);
-                    if(return_code != 0){
-                        return_code = -11;
-                    }
-                }
-            }
-            break;
-
-
-    }
-    return return_code; */
+    return 0;
 }
 
 /////////////////////////load_instruction///////////////////////////////////////////
@@ -768,7 +565,7 @@ int load_instruction(const uint32_t instruction, const char type){
 int set_instruction(const uint32_t instruction, const char type){
     uint32_t rd, rs, rt, immediate;
     uint32_t rs_val, rt_val;
-    int return_code = 0, signed_immediate;
+    int return_code = 0, signed_immediate; 
     switch(type){
         case 'R' :
             switch(instruction & FUNCT_MASK){
@@ -836,12 +633,12 @@ int set_instruction(const uint32_t instruction, const char type){
 int32_t sign_extend_immediate(const uint32_t instruction){
     int32_t immediate;
     immediate = ((instruction & 0b1000000000000000) == 0) ? (instruction & IMMEDIATE_MASK) : ((instruction & IMMEDIATE_MASK) | 0xffff0000);
-
+    
     return immediate;
 }
 
 /////////////////////////check_overflow/////////////////////////////////////////////
-bool check_overflow_add(int32_t add1, int32_t add2){
+bool check_overflow(int32_t add1, int32_t add2){
     bool overflow;
     if(add1 > 0 && add2 > 0){
         if((add1 + add2) <= 0){
@@ -862,34 +659,7 @@ bool check_overflow_add(int32_t add1, int32_t add2){
     else{
         overflow = false;
     }
-
-    return overflow;
-}
-
-bool check_overflow_sub(int32_t sub1, int32_t sub2){//this is checking signed overflow, is that a problem? Do we need to check unsigned overflow instead?
-    bool overflow;
-    if(sub1>0 && sub2<0){
-        if((sub1 - sub2) <= 0){
-            overflow = true;
-        }
-        else{
-            overflow = false;
-        }
-    }
-    else if(sub1<0 && sub2>0){
-        if((sub1-sub2) >=0){
-            overflow = true;
-        }
-        else{
-            overflow = false;
-        }
-    }
-    else{
-        overflow = false;
-    }
-
-
-
+    
     return overflow;
 }
 
@@ -897,7 +667,7 @@ bool check_overflow_sub(int32_t sub1, int32_t sub2){//this is checking signed ov
 int execute_instruction(uint32_t instruction, bool branch_delay){
     uint32_t opcode = instruction >> 26;
     int return_code;
-            //SORT THROUGH
+            //SORT THROUGH 
         switch(opcode){
             case 0 :
                 return_code = sort_R(instruction, 'R');
