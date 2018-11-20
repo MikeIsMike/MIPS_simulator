@@ -13,8 +13,9 @@ int main(int argc, char* argv[]){
     uint32_t instruction;
     index = MEMORY.set_instructions(argv[1]);
 
+
     ////////////////TESTING REGISTER VALUES///////////////////////////////////////////////
-    REG[3] = 0xffff0000;
+    // REG[3] = 0xffff0000;
     //////////////////////////////////////////////////////////////////////////////////////
     while(PROG_COUNTER != 0){
         instruction = MEMORY.get_instruction(PROG_COUNTER);
@@ -23,19 +24,20 @@ int main(int argc, char* argv[]){
 
         if(return_code){
         //IF THERE IS AN ERROR AND NO BRANCH DELAY, IMMEDIATELY THROW EXCEPTION
-            cout << "ERROR: " << return_code << endl;
-            cout << "Program Counter: " << PROG_COUNTER << endl;
+            //cerr << "ERROR: " << return_code << endl;
+            //cerr << "Program Counter: " << PROG_COUNTER << endl;
             for(int j = 0; j < 32; j++){
-            cout << "Register " << j << " : " << REG[j] << endl;
+            //cerr << "Register " << j << " : " << REG[j] << endl;
             }
             exit(return_code);
         }
-        cout << "hi" << endl;
+        //cerr << "hi" << endl;
     }
-    cout << "Program Counter: " << PROG_COUNTER << endl;
-    for(int j = 0; j < 32; j++){
-        cout << "Register " << j << " : " << REG[j] << endl;
-    }
+    //cerr << "Program Counter: " << PROG_COUNTER << endl;
+    //for(int j = 0; j < 32; j++){
+     //   cerr << "Register " << j << " : " << REG[j] << endl;
+    //}
     uint8_t exit_code = REG[2] & BYTE_MASK;
+	//exit_code = 1;
     exit(exit_code);
 }

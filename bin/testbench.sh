@@ -4,10 +4,14 @@ echo ${args[0]} #${args[1]} ${args[2]}
 NUMBER=0
 TESTS="./test/*"
 
+echo $?
+
 for T in $TESTS
 do
 
+    echo $T
     ${args[0]} $T
+    EXITCODE=$?
     filename=$(basename "$T") #get rid of path to the file
     filename="${filename%.*}" #get filename without extension
     testname="${filename%%.*}" #get testname which is before first "."
@@ -18,7 +22,7 @@ do
 
 
 #needs to get result from simulator to replace 0 here!!!!!!
-if [ $result -eq $? ]; #space between square brackets are necessary
+if [ $result -eq $EXITCODE ]; #space between square brackets are necessary
 then
     echo $NUMBER, $testname, pass, $author #author is the between first and second dots
 else

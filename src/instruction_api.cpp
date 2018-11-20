@@ -340,6 +340,7 @@ int mul_instruction(const uint32_t instruction, const char type){
     int return_code = 0;
     uint32_t rs,rt;
     uint32_t u_regRs, u_regRt;
+	int64_t regRs, regRt;
     uint64_t u_mul;
     int64_t mul;
     rs = (instruction >> 21) & REG_MASK;
@@ -347,7 +348,9 @@ int mul_instruction(const uint32_t instruction, const char type){
     switch(instruction & FUNCT_MASK){
         case 24:
             //MULT
-            mul = REG[rs]*REG[rt];
+			regRs = REG[rs];
+			regRt = REG[rt];
+            mul = regRs * regRt;
             HI = (mul >> 32) & 0xFFFFFFFF;
             LO = mul & 0xFFFFFFFF;
             break;
@@ -487,7 +490,7 @@ int sub_instruction(const uint32_t instruction, const char type){
 
 ///////////////////////mov_instruction//////////////////////////////////////////////
 int mov_instruction(const uint32_t instruction, const char type){
-    int return_code;
+    int return_code = 0;
     uint32_t rd = (instruction >> 11) & REG_MASK; 
     uint32_t rs = (instruction >> 21) & REG_MASK;
     switch(instruction & FUNCT_MASK){
