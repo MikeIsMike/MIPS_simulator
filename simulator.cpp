@@ -30,6 +30,7 @@ int main(int argc, char* argv[]){
             }
             exit(return_code);
         }
+        cout << "hi" << endl;
     }
     cout << "Program Counter: " << PROG_COUNTER << endl;
     for(int j = 0; j < 32; j++){

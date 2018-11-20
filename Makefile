@@ -11,7 +11,7 @@ memory.o: memory.cpp memory.hpp
 	g++ -std=c++11 -c memory.cpp
 	
 run:
-	./simulator ../../../../Downloads/binary-output.bin
+	./simulator ../../../../Downloads/addiu.bin
 	
 clean:
 	rm *.o simulator
