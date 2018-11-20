@@ -1,0 +1,16 @@
+#depends on addi to work
+
+lui $t0, 1
+addi $t0, $t0, 0xFFFF
+addi $t0, $t0, 0xFFFF
+addi $t1, $t1, 0x7FFF
+add $t1, $t1, $t1
+add $t1, $t1, $t1
+addi $t2, $t2, 0xFFFF
+xor $t1, $t1, $t2
+addi $t1, $t1, 1
+add $t2, $t0, $t1
+
+
+jr $0
+nop
