@@ -18,7 +18,7 @@ do
 
 
 #needs to get result from simulator to replace 0 here!!!!!!
-if [ $result -eq 0 ]; #space between square brackets are necessary
+if [ $result -eq $? ]; #space between square brackets are necessary
 then
     echo $NUMBER, $testname, pass, $author #author is the between first and second dots
 else

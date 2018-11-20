@@ -1,0 +1,11 @@
+#depends on addi to work
+
+
+addi $3, $3, 0xFFFF
+addu $4, $3, $4
+addu $5, $3, $4
+addi $5, $5, 2
+addu $2, $5, $2
+
+jr $0
+nop

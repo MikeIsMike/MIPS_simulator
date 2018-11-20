@@ -12,21 +12,21 @@ int main(int argc, char* argv[]){
     int branched_error = 0;
     uint32_t instruction;
     index = MEMORY.set_instructions(argv[1]);
-    
+
     ////////////////TESTING REGISTER VALUES///////////////////////////////////////////////
-    REG[1] = 0x30000000;
+    REG[3] = 0xffff0000;
     //////////////////////////////////////////////////////////////////////////////////////
     while(PROG_COUNTER != 0){
         instruction = MEMORY.get_instruction(PROG_COUNTER);
 
         return_code = execute_instruction(instruction);
-        
+
         if(return_code){
-        //IF THERE IS AN ERROR AND NO BRANCH DELAY, IMMEDIATELY THROW EXCEPTION  
+        //IF THERE IS AN ERROR AND NO BRANCH DELAY, IMMEDIATELY THROW EXCEPTION
             cout << "ERROR: " << return_code << endl;
             cout << "Program Counter: " << PROG_COUNTER << endl;
             for(int j = 0; j < 32; j++){
-            cout << "Register " << j << " : " << REG[j] << endl; 
+            cout << "Register " << j << " : " << REG[j] << endl;
             }
             exit(return_code);
         }
@@ -34,8 +34,8 @@ int main(int argc, char* argv[]){
     }
     cout << "Program Counter: " << PROG_COUNTER << endl;
     for(int j = 0; j < 32; j++){
-        cout << "Register " << j << " : " << REG[j] << endl; 
+        cout << "Register " << j << " : " << REG[j] << endl;
     }
-    uint8_t exit_code = REG[2] & BYTE_MASK; 
+    uint8_t exit_code = REG[2] & BYTE_MASK;
     exit(exit_code);
 }
