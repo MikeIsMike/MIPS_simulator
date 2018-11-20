@@ -527,8 +527,8 @@ int branch_instruction(const uint32_t instruction, const char type){
 	case 4:
 		rs = (instruction >> 21) & REG_MASK;
 		rt = (instruction >> 16) & REG_MASK;
-		offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
-		offset = offset0 << 2;
+		offset0 = (instruction & IMMEDIATE_MASK); //temporary variable for signed extension
+		offset = offset0 << 2; //shift left by 2 to get 18 bits
 		if (REG[rs] == REG[rt]) {
 			execute_branch_delay(PROG_COUNTER, offset, branch_delay, return_code);
 		}
@@ -567,8 +567,8 @@ int branch_instruction(const uint32_t instruction, const char type){
 
 		case 0:
 			rs = (instruction >> 21) & REG_MASK;
-			offset = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
-			offset = offset << 2;
+			offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
+			offset = offset0 << 2;
 			if (REG[rs]<0) {
 				execute_branch_delay(PROG_COUNTER, offset, branch_delay, return_code);
 			}
@@ -601,8 +601,8 @@ int branch_instruction(const uint32_t instruction, const char type){
 
 	case 7:
 		rs = (instruction >> 21) & REG_MASK;
-		offset = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
-		offset = offset << 2;
+		offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
+		offset = offset0 << 2;
 		if (REG[rs]>0) {
 			execute_branch_delay(PROG_COUNTER, offset, branch_delay, return_code);
 		}
@@ -610,8 +610,8 @@ int branch_instruction(const uint32_t instruction, const char type){
 
 	case 6:
 		rs = (instruction >> 21) & REG_MASK;
-		offset = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
-		offset = offset << 2;
+		offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
+		offset = offset0 << 2;
 		if (REG[rs] <= 0) {
 			execute_branch_delay(PROG_COUNTER, offset, branch_delay, return_code);
 		}
@@ -620,8 +620,8 @@ int branch_instruction(const uint32_t instruction, const char type){
 	case 5:
 		rs = (instruction >> 21) & REG_MASK;
 		rt = (instruction >> 16) & REG_MASK;
-		offset = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
-		offset = offset << 2;
+		offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
+		offset = offset0 << 2;
 		if (REG[rs] != REG[rt]) {
 			execute_branch_delay(PROG_COUNTER, offset, branch_delay, return_code);
 		}
