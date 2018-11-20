@@ -1,0 +1,10 @@
+lui $t0, 0xffff
+ori $t0, $t0, 0xffff
+lui $t1, 0xffff
+ori $t1, $t1, 0xffff
+mult $t0, $t1
+mfhi $t3
+lui $t2, 0x0000
+ori $t2, $t2, 0x0000
+xor $v0, $t2, $t3
+jr $ra
