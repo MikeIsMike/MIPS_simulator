@@ -193,11 +193,11 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                 index = (address - 0x20000000)/4;
                 half_offset = (address - 0x20000000)%4;
                 if(sign){
-                    halfword = (DATA_MEM[index] >> (24-8*half_offset)) & BYTE_MASK;
+                    halfword = (DATA_MEM[index] >> (24-8*half_offset)) & HALFWORD_MASK;
                     data = halfword;
                 }
                 else{
-                    u_halfword = (DATA_MEM[index] >> (24-8*half_offset)) & BYTE_MASK;
+                    u_halfword = (DATA_MEM[index] >> (24-8*half_offset)) & HALFWORD_MASK;
                     data = u_halfword;
                 }
                 REG[rt] = data;
@@ -206,11 +206,11 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                 index = (address - 0x10000000)/4;
                 half_offset = (address - 0x10000000)%4;
                 if(sign){
-                    halfword = (INST[index] >> (24-8*half_offset)) & BYTE_MASK;
+                    halfword = (INST[index] >> (24-8*half_offset)) & HALFWORD_MASK;
                     data = halfword;
                 }
                 else{
-                    u_halfword = (INST[index] >> (24-8*half_offset)) & BYTE_MASK;
+                    u_halfword = (INST[index] >> (24-8*half_offset)) & HALFWORD_MASK;
                     data = u_halfword;
                 }
                 REG[rt] = data;
@@ -280,6 +280,7 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
             }
             break;
     }
+    return return_code;
 }
 
 /////////////////////////////////////load_unaligned_memory////////////////////////////////
@@ -340,7 +341,7 @@ string memory::check_byte(int32_t address){
     if(address >= 0x20000000 && address < 0x24000000){
         access = "data";
     }
-    else if(address >= 0x30000004 && address < 0x30000007){
+    else if(address >= 0x30000004 && address < 0x30000008){
         access = "putc";
     }
     else if(address >= 0x30000000 && address < 0x30000004){
@@ -357,11 +358,11 @@ string memory::check_byte(int32_t address){
 ///////////////////////////////check_half/////////////////////////////////////////////////
 string memory::check_half(int32_t address){
     string access;
-    if((address & 0b10) == 0){
+    if((address & 0b1) == 0){
         if(address >= 0x20000000 && address < 0x24000000){
             access = "data";
         }
-        else if(address >= 0x30000004 && address < 0x30000007){
+        else if(address >= 0x30000004 && address < 0x30000008){
             access = "putc";
         }
         else if(address >= 0x30000000 && address < 0x30000004){
@@ -386,7 +387,7 @@ string memory::check_word(int32_t address){
         if(address >= 0x20000000 && address < 0x24000000){
             access = "data";
         }
-        else if(address >= 0x30000004 && address < 0x30000007){
+        else if(address >= 0x30000004 && address < 0x30000008){
             access = "putc";
         }
         else if(address >= 0x30000000 && address < 0x30000004){

@@ -125,6 +125,8 @@ int sort_R(const uint32_t instruction, const char type){
 ////////////////////////////add_instruction///////////////////////////////////////////
 int add_instruction(const uint32_t instruction, const char type){
     uint32_t rs, rt, rd;
+    int16_t signed_immediate;
+    uint16_t unsigned_immediate;
     int32_t immediate;
     int return_code = 0;
     switch(type){
@@ -156,20 +158,20 @@ int add_instruction(const uint32_t instruction, const char type){
                     //ADDI
                     rs = (instruction >> 21) & REG_MASK;
                     rt = (instruction >> 16) & REG_MASK;
-                    immediate = sign_extend_immediate(instruction);
+                    signed_immediate = instruction & IMMEDIATE_MASK;
                     if(check_overflow(REG[rs], immediate)){
                         return_code = -10;
                     }
                     else{
-                        REG[rt] = REG[rs] + immediate;
+                        REG[rt] = REG[rs] + signed_immediate;
                     }
                     break;
                 case 9 :
                     //ADDIU
                     rs = (instruction >> 21) & REG_MASK;
                     rt = (instruction >> 16) & REG_MASK;
-                    immediate = sign_extend_immediate(instruction);
-                    REG[rt] = REG[rs] + immediate;
+                    unsigned_immediate = instruction & IMMEDIATE_MASK;
+                    REG[rt] = REG[rs] + unsigned_immediate;
                     break;
             }
     }
@@ -251,7 +253,7 @@ int jump_instruction(const uint32_t instruction, const char type){
                     else if(check == "null"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
-                        PROG_COUNTER = address - 4;
+                        PROG_COUNTER = REG[rs] - 4;
                     }
                     else{
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
@@ -276,7 +278,7 @@ int jump_instruction(const uint32_t instruction, const char type){
                     else if(check == "null"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
-                        PROG_COUNTER = address - 4;
+                        PROG_COUNTER = REG[rs] - 4;
                     }
                     else{
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
@@ -387,9 +389,10 @@ int or_instruction(const uint32_t instruction, const char type){
 ///////////////////////////store_instruction/////////////////////////////////////////
 int store_instruction(const uint32_t instruction, const char type){
     int return_code = 0;
+    int16_t immediate = instruction & IMMEDIATE_MASK;
     uint32_t base = (instruction >> 21) & REG_MASK;
     uint32_t rt = (instruction >> 16) & REG_MASK;
-    int32_t offset = sign_extend_immediate(instruction);
+    int32_t offset = immediate;
     int32_t address = REG[base] + offset;
     switch(instruction >> 26){
         case 40:
@@ -519,9 +522,10 @@ int branch_instruction(const uint32_t instruction, const char type){
 /////////////////////////load_instruction///////////////////////////////////////////
 int load_instruction(const uint32_t instruction, const char type){
     int return_code = 0;
+    int16_t immediate = instruction & IMMEDIATE_MASK;
     uint32_t base = (instruction >> 21) & REG_MASK;
     uint32_t rt = (instruction >> 16) & REG_MASK;
-    int32_t offset = sign_extend_immediate(instruction);
+    int32_t offset = immediate;
     int32_t address = REG[base] + offset;
     switch(instruction >> 26){
         case 15:
@@ -531,38 +535,39 @@ int load_instruction(const uint32_t instruction, const char type){
             break;
         case 32:
             //LB
-            MEMORY.load_memory(address, rt, 'B', true);
+            return_code = MEMORY.load_memory(address, rt, 'B', true);
             break;
         case 33:
             //LH
-            MEMORY.load_memory(address, rt, 'H', true);
+            return_code = MEMORY.load_memory(address, rt, 'H', true);
             break;
         case 34:
             //LWL
-            MEMORY.load_unaligned_memory(address, rt, 'L');
+            return_code = MEMORY.load_unaligned_memory(address, rt, 'L');
             break;
         case 35:
             //LW
-            MEMORY.load_memory(address, rt, 'W', true);
+            return_code = MEMORY.load_memory(address, rt, 'W', true);
             break;
         case 36:
             //LBU
-            MEMORY.load_memory(address, rt, 'B', false);
+            return_code = MEMORY.load_memory(address, rt, 'B', false);
             break;
         case 37:
             //LHU
-            MEMORY.load_memory(address, rt, 'H', false);
+            return_code = MEMORY.load_memory(address, rt, 'H', false);
             break;
         case 38:
             //LWR
-            MEMORY.load_unaligned_memory(address, rt, 'R');
+            return_code = MEMORY.load_unaligned_memory(address, rt, 'R');
             break;
     }
-    return 0;
+    return return_code;
 }
 
 ////////////////////////////set_instruction///////////////////////////////////////////
 int set_instruction(const uint32_t instruction, const char type){
+    int16_t sixteenbit_immediate;
     uint32_t rd, rs, rt, immediate;
     uint32_t rs_val, rt_val;
     int return_code = 0, signed_immediate; 
@@ -602,7 +607,8 @@ int set_instruction(const uint32_t instruction, const char type){
                     //SLTI
                     rs = (instruction >> 21) & REG_MASK;
                     rt = (instruction >> 16) & REG_MASK;
-                    signed_immediate = sign_extend_immediate(instruction);
+                    sixteenbit_immediate = instruction & IMMEDIATE_MASK;
+                    signed_immediate = sixteenbit_immediate;
                     if(REG[rs] < signed_immediate){
                         REG[rt] = 1;
                     }
@@ -615,8 +621,8 @@ int set_instruction(const uint32_t instruction, const char type){
                     rs = (instruction >> 21) & REG_MASK;
                     rt = (instruction >> 16) & REG_MASK;
                     rs_val = REG[rs];
-                    signed_immediate = sign_extend_immediate(instruction);
-                    immediate = signed_immediate;
+                    sixteenbit_immediate = instruction & IMMEDIATE_MASK;
+                    immediate = sixteenbit_immediate;
                     if(rs_val < immediate){
                         REG[rt] = 1;
                     }
@@ -627,14 +633,6 @@ int set_instruction(const uint32_t instruction, const char type){
             }
     }
     return return_code;
-}
-
-//////////////////////////sign_extend_immediate//////////////////////////////////////
-int32_t sign_extend_immediate(const uint32_t instruction){
-    int32_t immediate;
-    immediate = ((instruction & 0b1000000000000000) == 0) ? (instruction & IMMEDIATE_MASK) : ((instruction & IMMEDIATE_MASK) | 0xffff0000);
-    
-    return immediate;
 }
 
 /////////////////////////check_overflow/////////////////////////////////////////////

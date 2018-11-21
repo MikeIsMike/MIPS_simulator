@@ -8,6 +8,7 @@ for T in $TESTS
 do
 
     ${args[0]} $T
+    EXITCODE=$?
     filename=$(basename "$T") #get rid of path to the file
     filename="${filename%.*}" #get filename without extension
     testname="${filename%%.*}" #get testname which is before first "."
@@ -18,7 +19,7 @@ do
 
 
 #needs to get result from simulator to replace 0 here!!!!!!
-if [ $result -eq 0 ]; #space between square brackets are necessary
+if [ $result -eq $EXITCODE ]; #space between square brackets are necessary
 then
     echo $NUMBER, $testname, pass, $author #author is the between first and second dots
 else
