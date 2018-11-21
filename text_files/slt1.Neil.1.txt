@@ -1,0 +1,7 @@
+lui $16, 0x7895
+ori $16, $16, 0xBBCA
+lui $1, 0x79BC
+ori $1, $1, 0x8833
+slt $2, $16, $1
+jr $0
+nop

@@ -1,0 +1,7 @@
+lui $13, 0xFFFF
+ori $13, $13, 0xFFFF
+lui $7, 0x0FFF
+ori $7, $7, 0xFFFF
+sltu $2, $13, $7
+jr $0
+nop

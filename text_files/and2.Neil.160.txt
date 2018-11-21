@@ -1,0 +1,7 @@
+lui $5 0xFFFF
+ori $5, $5, 0x5AF0
+lui $23, 0x0000
+ori $23, $23, 0xA5AF
+and $2, $5, $23
+jr $0
+nop

@@ -1,0 +1,7 @@
+lui $27, 0xFFFF
+ori $27, $27, 0xFEa5
+lui $9, 0xFF07
+ori $9, $9, 0x85d4
+add $2, $27, $9
+jr $0
+nop

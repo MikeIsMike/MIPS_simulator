@@ -128,7 +128,6 @@ int sort_R(const uint32_t instruction, const char type){
 int add_instruction(const uint32_t instruction, const char type){
     uint32_t rs, rt, rd;
     int16_t signed_immediate;
-    uint16_t unsigned_immediate;
     int32_t immediate;
     int return_code = 0;
     switch(type){
@@ -161,19 +160,21 @@ int add_instruction(const uint32_t instruction, const char type){
                     rs = (instruction >> 21) & REG_MASK;
                     rt = (instruction >> 16) & REG_MASK;
                     signed_immediate = instruction & IMMEDIATE_MASK;
+                    immediate = signed_immediate;
                     if(check_overflow(REG[rs], immediate)){
                         return_code = -10;
                     }
                     else{
-                        REG[rt] = REG[rs] + signed_immediate;
+                        REG[rt] = REG[rs] + immediate;
                     }
                     break;
                 case 9 :
                     //ADDIU
                     rs = (instruction >> 21) & REG_MASK;
                     rt = (instruction >> 16) & REG_MASK;
-                    unsigned_immediate = instruction & IMMEDIATE_MASK;
-                    REG[rt] = REG[rs] + unsigned_immediate;
+                    signed_immediate = instruction & IMMEDIATE_MASK;
+                    immediate = signed_immediate;
+                    REG[rt] = REG[rs] + immediate;
                     break;
             }
     }

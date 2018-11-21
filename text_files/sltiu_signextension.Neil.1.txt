@@ -1,0 +1,5 @@
+lui $20, 0x0FFF
+ori $20, $20, 0xFFFD
+sltiu $2, $20, 0xFFFE
+jr $0
+nop

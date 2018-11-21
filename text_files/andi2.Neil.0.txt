@@ -1,0 +1,4 @@
+ori $2, $2, 0x5a5a
+andi $2, $2, 0xa5a5   
+jr $0
+nop
