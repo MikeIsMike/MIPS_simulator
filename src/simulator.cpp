@@ -17,13 +17,13 @@ int main(int argc, char* argv[]){
         instruction = MEMORY.get_instruction(PROG_COUNTER);
 
         return_code = execute_instruction(instruction);
-        
+
         if(return_code){
         //IF THERE IS AN ERROR AND NO BRANCH DELAY, IMMEDIATELY THROW EXCEPTION
-            cout << "ERROR: " << return_code << endl;
-            cout << "Program Counter: " << PROG_COUNTER << endl;
+            cerr << "ERROR: " << return_code << endl;
+            cerr << "Program Counter: " << PROG_COUNTER << endl;
             for(int j = 0; j < 32; j++){
-            cout << "Register " << j << " : " << REG[j] << endl; 
+            cerr << "Register " << j << " : " << REG[j] << endl;
             }
             exit(return_code);
         }
@@ -32,11 +32,10 @@ int main(int argc, char* argv[]){
             REG[0] = 0;
         }
     }
-    cout << "Program Counter: " << PROG_COUNTER << endl;
+    cerr << "Program Counter: " << PROG_COUNTER << endl;
     for(int j = 0; j < 32; j++){
-        cout << "Register " << j << " : " << REG[j] << endl; 
+        cerr << "Register " << j << " : " << REG[j] << endl;
     }
     uint8_t exit_code = REG[2] & BYTE_MASK;
     exit(exit_code);
 }
-

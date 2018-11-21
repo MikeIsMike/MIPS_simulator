@@ -18,6 +18,8 @@ int32_t          PROG_COUNTER = 0x10000000;
 int32_t          HI;
 int32_t          LO;
 memory           MEMORY;
+
+void execute_branch_delay(int32_t& PROG_COUNTER, int32_t& offset, uint32_t& branch_delay, int& return_code);
 ////////////////////////////////sort_I////////////////////////////////////////////////
 int sort_I(const uint32_t instruction, const char type){
     int return_code;
@@ -342,6 +344,7 @@ int mul_instruction(const uint32_t instruction, const char type){
     int return_code = 0;
     uint32_t rs,rt;
     uint32_t u_regRs, u_regRt;
+	int64_t regRs, regRt;
     uint64_t u_mul;
     int64_t mul;
     rs = (instruction >> 21) & REG_MASK;
@@ -349,7 +352,9 @@ int mul_instruction(const uint32_t instruction, const char type){
     switch(instruction & FUNCT_MASK){
         case 24:
             //MULT
-            mul = REG[rs]*REG[rt];
+			regRs = REG[rs];
+			regRt = REG[rt];
+            mul = regRs * regRt;
             HI = (mul >> 32) & 0xFFFFFFFF;
             LO = mul & 0xFFFFFFFF;
             break;
@@ -490,7 +495,7 @@ int sub_instruction(const uint32_t instruction, const char type){
 
 ///////////////////////mov_instruction//////////////////////////////////////////////
 int mov_instruction(const uint32_t instruction, const char type){
-    int return_code;
+    int return_code = 0;
     uint32_t rd = (instruction >> 11) & REG_MASK; 
     uint32_t rs = (instruction >> 21) & REG_MASK;
     switch(instruction & FUNCT_MASK){
@@ -516,7 +521,118 @@ int mov_instruction(const uint32_t instruction, const char type){
 
 //////////////////////branch_instruction////////////////////////////////////////////
 int branch_instruction(const uint32_t instruction, const char type){
-    return 0;
+	uint32_t opcode = instruction >> 26;
+	uint32_t branch_delay;
+	int16_t offset0;
+	int32_t rs, rt, offset; //they are all signed becuase case 1 requires signed rs.
+	int return_code = 0;
+	switch (opcode) {
+	case 4:
+		rs = (instruction >> 21) & REG_MASK;
+		rt = (instruction >> 16) & REG_MASK;
+		offset0 = (instruction & IMMEDIATE_MASK); //temporary variable for signed extension
+		offset = offset0 << 2; //shift left by 2 to get 18 bits
+		if (REG[rs] == REG[rt]) {
+			execute_branch_delay(PROG_COUNTER, offset, branch_delay, return_code);
+		}
+		break;
+
+	case 1: //BGEZ
+		rs = (instruction >> 21) & REG_MASK;
+		rt = (instruction >> 16) & REG_MASK; //to distinguish BGEZ, BGEZAL and etc.
+		switch (rt) {
+		case 1:
+			if (REG[rs] >= 0) {
+				execute_branch_delay(PROG_COUNTER, offset, branch_delay, return_code);
+			}
+			break;
+
+		case 0b10001: //BGEZAL
+			if (REG[rs] >= 0) {
+				if (MEMORY.check_word(PROG_COUNTER + offset + 4)=="inst") {
+					PROG_COUNTER = PROG_COUNTER + 4;
+					branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+					return_code = execute_instruction(branch_delay, true);
+					REG[31] = PROG_COUNTER + 4;
+					PROG_COUNTER = PROG_COUNTER + offset - 4; ///check whether -4 is correct
+
+				}
+				else {
+					PROG_COUNTER = PROG_COUNTER + 4;
+					branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+					return_code = execute_instruction(branch_delay, true);
+					if (return_code == 0) {
+						return_code = -11;
+					}
+				}
+			}
+			break;
+
+		case 0:
+			rs = (instruction >> 21) & REG_MASK;
+			offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
+			offset = offset0 << 2;
+			if (REG[rs]<0) {
+				execute_branch_delay(PROG_COUNTER, offset, branch_delay, return_code);
+			}
+			break;
+
+		case 0b10000:
+			if (REG[rs]<0) {
+				if (MEMORY.check_word(PROG_COUNTER + offset + 4) == "inst") {
+					PROG_COUNTER = PROG_COUNTER + 4;
+					branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+					return_code = execute_instruction(branch_delay, true);
+					REG[31] = PROG_COUNTER + 4;
+					PROG_COUNTER = PROG_COUNTER + offset - 4; ///check whether -4 is correct
+
+				}
+				else {
+					PROG_COUNTER = PROG_COUNTER + 4;
+					branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+					return_code = execute_instruction(branch_delay, true);
+					if (return_code != 0) {
+						return_code = -11;
+					}
+				}
+			}
+			break;
+
+		}
+		break;
+
+
+	case 7:
+		rs = (instruction >> 21) & REG_MASK;
+		offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
+		offset = offset0 << 2;
+		if (REG[rs]>0) {
+			execute_branch_delay(PROG_COUNTER, offset, branch_delay, return_code);
+		}
+		break;
+
+	case 6:
+		rs = (instruction >> 21) & REG_MASK;
+		offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
+		offset = offset0 << 2;
+		if (REG[rs] <= 0) {
+			execute_branch_delay(PROG_COUNTER, offset, branch_delay, return_code);
+		}
+		break;
+
+	case 5:
+		rs = (instruction >> 21) & REG_MASK;
+		rt = (instruction >> 16) & REG_MASK;
+		offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
+		offset = offset0 << 2;
+		if (REG[rs] != REG[rt]) {
+			execute_branch_delay(PROG_COUNTER, offset, branch_delay, return_code);
+		}
+		break;
+
+
+	}
+	return return_code;
 }
 
 /////////////////////////load_instruction///////////////////////////////////////////
@@ -681,4 +797,21 @@ int execute_instruction(uint32_t instruction, bool branch_delay){
         PROG_COUNTER = PROG_COUNTER + 4;
     }
     return return_code;
+}
+
+///////////////////////////////////Branch delay//////////////////////////////////////////
+void execute_branch_delay(int32_t& PROG_COUNTER, int32_t& offset, uint32_t& branch_delay, int& return_code) {
+	PROG_COUNTER = PROG_COUNTER + 4;
+	if (MEMORY.check_word(PROG_COUNTER + offset) == "inst") {
+		branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+		return_code = execute_instruction(branch_delay, true);
+		PROG_COUNTER = PROG_COUNTER + offset - 4;
+	}
+	else {
+		branch_delay = MEMORY.get_instruction(PROG_COUNTER);
+		return_code = execute_instruction(branch_delay, true);
+		if (return_code == 0) {
+			return_code = -11;
+		}
+	}
 }

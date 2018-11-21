@@ -1,0 +1,8 @@
+#depends on addi to work
+
+lui $t0, 0xFFFF
+addi $t0, $t0, 0xFFFF
+addi $2, $t0, 6
+
+jr $0
+nop
