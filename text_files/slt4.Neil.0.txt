@@ -1,0 +1,7 @@
+lui $14, 0x5a5a
+ori $14, $14, 0xa5a5
+lui $11, 0x5a5a
+ori $11, $11, 0xa5a5
+slt $2, $14, $11
+jr $0
+nop

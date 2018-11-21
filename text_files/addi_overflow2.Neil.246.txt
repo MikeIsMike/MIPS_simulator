@@ -1,0 +1,5 @@
+lui $2, 0x8000
+ori $2, $2, 0x0000
+addi $2, $2, 0xFFFF
+jr $0
+nop

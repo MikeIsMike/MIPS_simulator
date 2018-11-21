@@ -8,8 +8,6 @@ using namespace std;
 int main(int argc, char* argv[]){
     int return_code;
     int index;
-    bool branching;
-    int branched_error = 0;
     uint32_t instruction;
     index = MEMORY.set_instructions(argv[1]);
 

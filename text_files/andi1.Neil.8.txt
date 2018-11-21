@@ -1,0 +1,4 @@
+ori $3, $3, 0xd4fe
+andi $2, $3, 0x0009   
+jr $0
+nop

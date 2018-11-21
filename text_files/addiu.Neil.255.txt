@@ -1,0 +1,3 @@
+addiu $2, $2, 0xFF
+jr $0
+nop

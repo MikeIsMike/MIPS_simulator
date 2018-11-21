@@ -1,10 +1,11 @@
 #depends on addiu to work
 
 
-addiu $3, $3, 0xFFFF
+ori $3, $3, 0xFFFF
 addu $4, $3, $4
 addu $5, $3, $4
-addiu $5, $5, 5
+ori $6, $6, 5
+addu $5, $5, $6
 addu $2, $5, $0
 
 jr $0

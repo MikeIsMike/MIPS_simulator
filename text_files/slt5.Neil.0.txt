@@ -1,0 +1,6 @@
+lui $26, 0xF000
+ori $26, $26, 0xEFDD
+ori $25, $25, 0xEFDD
+slt $2, $25, $26
+jr $0
+nop

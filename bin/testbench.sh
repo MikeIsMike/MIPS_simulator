@@ -4,7 +4,6 @@ echo ${args[0]} #${args[1]} ${args[2]}
 NUMBER=0
 TESTS="./test/*"
 
-echo $?
 
 for T in $TESTS
 do
