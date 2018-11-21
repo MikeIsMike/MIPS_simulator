@@ -1,0 +1,7 @@
+#depends on lui to work
+#shift right 30 times, replicate ms bit which is 0
+
+lui $t0, 0x4F00
+sra $2, $t0, 30
+jr $0
+nop

@@ -1,0 +1,7 @@
+#depends on addi to work
+#shift 0b111 left by 6 times
+
+addi $t0, $t0, 7
+sll $2, $t0, 6
+jr $0
+nop

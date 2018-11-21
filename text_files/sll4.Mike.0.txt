@@ -1,0 +1,7 @@
+#depends on addi to work
+#shift 30 times, $2 has the biggest negative value -21xxxxxxxxxxx, but it should return 0.
+
+addi $t0, $t0, 0xFFFF
+sll $2, $t0, 30
+jr $0
+nop

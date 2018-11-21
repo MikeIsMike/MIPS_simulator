@@ -1,0 +1,7 @@
+#depends on addi to work
+#it shifts to have 0b10000000 in the lowest 8 bits of $2
+
+addi $t0, $t0, 0xFFFF
+sll $2, $t0, 7
+jr $0
+nop

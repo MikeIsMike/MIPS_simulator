@@ -58,7 +58,8 @@ int32_t sign_extend_immediate(const uint32_t instruction);
 
 bool check_overflow(int32_t add1, int32_t add2);
 
+bool check_overflow_sub(int32_t sub1, int32_t sub2);
+
 bool check_instruction_address(int32_t address);
 
 int execute_instruction(uint32_t instruction, bool branch_delay = false);
-
