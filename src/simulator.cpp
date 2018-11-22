@@ -18,22 +18,22 @@ int main(int argc, char* argv[]){
 
         if(return_code){
         //IF THERE IS AN ERROR AND NO BRANCH DELAY, IMMEDIATELY THROW EXCEPTION
-            cerr << "ERROR: " << return_code << endl;
-            cerr << "Program Counter: " << PROG_COUNTER << endl;
-            for(int j = 0; j < 32; j++){
-            cerr << "Register " << j << " : " << REG[j] << endl;
-            }
+            // cerr << "ERROR: " << return_code << endl;
+            // cerr << "Program Counter: " << PROG_COUNTER << endl;
+            // for(int j = 0; j < 32; j++){
+            // cerr << "Register " << j << " : " << REG[j] << endl;
+            // }
             exit(return_code);
         }
-        
+
         if(REG[0] != 0){
             REG[0] = 0;
         }
     }
-    cerr << "Program Counter: " << PROG_COUNTER << endl;
-    for(int j = 0; j < 32; j++){
-        cerr << "Register " << j << " : " << REG[j] << endl;
-    }
+    // cerr << "Program Counter: " << PROG_COUNTER << endl;
+    // for(int j = 0; j < 32; j++){
+    //     cerr << "Register " << j << " : " << REG[j] << endl;
+    // }
     uint8_t exit_code = REG[2] & BYTE_MASK;
     exit(exit_code);
 }

@@ -120,7 +120,7 @@ int sort_R(const uint32_t instruction, const char type){
             return_code = set_instruction(instruction, type);
             break;
     }
-    
+
     return return_code;
 }
 
@@ -251,7 +251,7 @@ int jump_instruction(const uint32_t instruction, const char type){
                     if(check == "inst"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
-                        PROG_COUNTER = REG[rs] - 4; 
+                        PROG_COUNTER = REG[rs] - 4;
                     }
                     else if(check == "null"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
@@ -276,7 +276,7 @@ int jump_instruction(const uint32_t instruction, const char type){
                     if(check == "inst"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
-                        PROG_COUNTER = REG[rs] - 4; 
+                        PROG_COUNTER = REG[rs] - 4;
                     }
                     else if(check == "null"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
@@ -498,13 +498,13 @@ uint32_t rs, rt, rd;
             rs = (instruction >> 21) & REG_MASK;
             rt = (instruction >> 16) & REG_MASK;
             rd = (instruction >> 11) & REG_MASK;
-            std::cout<<"\n"<<REG[rs]<<" "<<REG[rt]<<" "<<REG[rd]<<std::endl;
+            //std::cout<<"\n"<<REG[rs]<<" "<<REG[rt]<<" "<<REG[rd]<<std::endl;
             if(check_overflow_sub(REG[rs], REG[rt])){
                 return_code = -10;
             }
             else{
                 REG[rd] = REG[rs] - REG[rt];
-                cout << rs << " " << rt << " " << rd;
+                //cout << rs << " " << rt << " " << rd;
             }
             break;
         case 35:
@@ -516,14 +516,14 @@ uint32_t rs, rt, rd;
 
     }
 
-    std::cout<< "\n"<<return_code<<std::endl;
+    //std::cout<< "\n"<<return_code<<std::endl;
     return return_code;
 }
 
 ///////////////////////mov_instruction//////////////////////////////////////////////
 int mov_instruction(const uint32_t instruction, const char type){
     int return_code = 0;
-    uint32_t rd = (instruction >> 11) & REG_MASK; 
+    uint32_t rd = (instruction >> 11) & REG_MASK;
     uint32_t rs = (instruction >> 21) & REG_MASK;
     switch(instruction & FUNCT_MASK){
         case 16:
@@ -713,7 +713,7 @@ int set_instruction(const uint32_t instruction, const char type){
     int16_t sixteenbit_immediate;
     uint32_t rd, rs, rt, immediate;
     uint32_t rs_val, rt_val;
-    int return_code = 0, signed_immediate; 
+    int return_code = 0, signed_immediate;
     switch(type){
         case 'R' :
             switch(instruction & FUNCT_MASK){
@@ -800,7 +800,7 @@ bool check_overflow(int32_t add1, int32_t add2){
     else{
         overflow = false;
     }
-    
+
     return overflow;
 }
 
@@ -835,7 +835,7 @@ bool check_overflow_sub(int32_t sub1, int32_t sub2){//this is checking signed ov
 int execute_instruction(uint32_t instruction, bool branch_delay){
     uint32_t opcode = instruction >> 26;
     int return_code;
-            //SORT THROUGH 
+            //SORT THROUGH
         switch(opcode){
             case 0 :
                 return_code = sort_R(instruction, 'R');
