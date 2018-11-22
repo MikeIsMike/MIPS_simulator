@@ -1,0 +1,8 @@
+#depends on addi to work
+#shifting 10 times right, 10 is the lowest 5 bits of 7F0A.
+
+addi $t0, $t0, 0x0FFF
+addi $t1, $t1, 0x7F0A
+srav $2, $t0, $t1
+jr $0
+nop

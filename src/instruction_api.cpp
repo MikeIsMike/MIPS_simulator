@@ -498,13 +498,11 @@ uint32_t rs, rt, rd;
             rs = (instruction >> 21) & REG_MASK;
             rt = (instruction >> 16) & REG_MASK;
             rd = (instruction >> 11) & REG_MASK;
-            //std::cout<<"\n"<<REG[rs]<<" "<<REG[rt]<<" "<<REG[rd]<<std::endl;
             if(check_overflow_sub(REG[rs], REG[rt])){
                 return_code = -10;
             }
             else{
                 REG[rd] = REG[rs] - REG[rt];
-                //cout << rs << " " << rt << " " << rd;
             }
             break;
         case 35:
@@ -516,7 +514,6 @@ uint32_t rs, rt, rd;
 
     }
 
-    //std::cout<< "\n"<<return_code<<std::endl;
     return return_code;
 }
 
@@ -555,6 +552,7 @@ int branch_instruction(const uint32_t instruction, const char type){
 	int return_code = 0;
 	switch (opcode) {
 	case 4:
+    //BEQ
 		rs = (instruction >> 21) & REG_MASK;
 		rt = (instruction >> 16) & REG_MASK;
 		offset0 = (instruction & IMMEDIATE_MASK); //temporary variable for signed extension
@@ -568,8 +566,8 @@ int branch_instruction(const uint32_t instruction, const char type){
 		rs = (instruction >> 21) & REG_MASK;
 		rt = (instruction >> 16) & REG_MASK; //to distinguish BGEZ, BGEZAL and etc.
 		switch (rt) {
-		case 1:
-			if (REG[rs] >= 0) {
+		case 1://BGEZ
+			if ((REG[rs] >= 0)&&(rs!=0)) {
 				execute_branch_delay(PROG_COUNTER, offset, branch_delay, return_code);
 			}
 			break;
@@ -595,7 +593,7 @@ int branch_instruction(const uint32_t instruction, const char type){
 			}
 			break;
 
-		case 0:
+		case 0://BLTZ
 			rs = (instruction >> 21) & REG_MASK;
 			offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
 			offset = offset0 << 2;
@@ -604,7 +602,7 @@ int branch_instruction(const uint32_t instruction, const char type){
 			}
 			break;
 
-		case 0b10000:
+		case 0b10000://BLTZAL
 			if (REG[rs]<0) {
 				if (MEMORY.check_word(PROG_COUNTER + offset + 4) == "inst") {
 					PROG_COUNTER = PROG_COUNTER + 4;
@@ -629,7 +627,7 @@ int branch_instruction(const uint32_t instruction, const char type){
 		break;
 
 
-	case 7:
+	case 7://BGTZ
 		rs = (instruction >> 21) & REG_MASK;
 		offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
 		offset = offset0 << 2;
@@ -638,7 +636,7 @@ int branch_instruction(const uint32_t instruction, const char type){
 		}
 		break;
 
-	case 6:
+	case 6://BLEZ
 		rs = (instruction >> 21) & REG_MASK;
 		offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
 		offset = offset0 << 2;
@@ -647,7 +645,7 @@ int branch_instruction(const uint32_t instruction, const char type){
 		}
 		break;
 
-	case 5:
+	case 5://BNE
 		rs = (instruction >> 21) & REG_MASK;
 		rt = (instruction >> 16) & REG_MASK;
 		offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits

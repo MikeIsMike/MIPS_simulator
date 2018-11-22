@@ -1,0 +1,8 @@
+#depends on lui to work
+#shift right 30 times, replicate ms bit which is 0, to get 3
+
+lui $t0, 0x60FF
+addi $t1, $t1, 29
+srav $2, $t0, $t1
+jr $0
+nop

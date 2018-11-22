@@ -1,0 +1,8 @@
+#depends on addi to work
+#all 0's xor all 0's
+
+addi $t0, $t0, 0
+xori $2, $t0, 0
+
+jr $0
+nop

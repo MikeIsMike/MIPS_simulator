@@ -1,0 +1,8 @@
+#depends on addi to work
+#shift right arithmetic 14 times(lowest 5 bits of FF0E)
+
+addi $t0, $t0, 0x8000
+addi $t1, $t1, 	0xFF0E
+srav $2, $t0, $t1
+jr $0
+nop
