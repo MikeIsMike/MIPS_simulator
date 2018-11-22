@@ -19,7 +19,6 @@ int32_t          HI;
 int32_t          LO;
 memory           MEMORY;
 
-void execute_branch_delay(int32_t& PROG_COUNTER, int32_t& offset, uint32_t& branch_delay, int& return_code);
 ////////////////////////////////sort_I////////////////////////////////////////////////
 int sort_I(const uint32_t instruction, const char type){
     int return_code;

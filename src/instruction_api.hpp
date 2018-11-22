@@ -63,3 +63,5 @@ bool check_overflow_sub(int32_t sub1, int32_t sub2);
 bool check_instruction_address(int32_t address);
 
 int execute_instruction(uint32_t instruction, bool branch_delay = false);
+
+void execute_branch_delay(int32_t& PROG_COUNTER, int32_t& offset, uint32_t& branch_delay, int& return_code);
