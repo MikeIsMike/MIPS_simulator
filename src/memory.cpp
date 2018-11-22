@@ -12,8 +12,12 @@ int memory::set_instructions(string filename){
     int length;
     unsigned int bit;
     uint8_t b;
-    
+
     file.open(filename, ios::binary | ios::in);
+	if (!file.is_open()) {
+		std::cerr << "Cannot open file" << std::endl;
+		exit(-21);
+	}
     file.seekg(0, file.end);
     length = file.tellg();
     file.seekg(0, file.beg);
@@ -37,9 +41,14 @@ int memory::set_instructions(string filename){
 
 //////////////////////////////get_instruction/////////////////////////////////////////////
 uint32_t memory::get_instruction(int32_t address){
-    uint32_t index = (address - 0x10000000)/4;
-    uint32_t instruction = INST[index];
-    return instruction;
+	if (check_word(PROG_COUNTER)=="inst") {
+		uint32_t index = (address - 0x10000000) / 4;
+		uint32_t instruction = INST[index];
+		return instruction;
+	}
+	else {
+		exit(-11);
+	}
 }
 
 //////////////////////////////store_memory////////////////////////////////////////////////
@@ -274,7 +283,7 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                 else{
                     REG[rt] = u_byte;
                 }
-            } 
+            }
             else{
                 return_code = -11;
             }

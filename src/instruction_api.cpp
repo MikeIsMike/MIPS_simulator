@@ -21,7 +21,7 @@ memory           MEMORY;
 
 ////////////////////////////////sort_I////////////////////////////////////////////////
 int sort_I(const uint32_t instruction, const char type){
-    int return_code;
+    int return_code = 0;
     switch(instruction >> 26){
         case 1 :
         case 4 :
@@ -69,7 +69,7 @@ int sort_I(const uint32_t instruction, const char type){
 ///////////////////////////////sort_R/////////////////////////////////////////////////
 int sort_R(const uint32_t instruction, const char type){
     uint32_t funct = instruction & FUNCT_MASK;
-    int return_code;
+    int return_code = 0;
     switch(funct){
         case 0 :
         case 2 :
@@ -831,7 +831,7 @@ bool check_overflow_sub(int32_t sub1, int32_t sub2){//this is checking signed ov
 ////////////////////////////////////execute_instruction///////////////////////////////////
 int execute_instruction(uint32_t instruction, bool branch_delay){
     uint32_t opcode = instruction >> 26;
-    int return_code;
+    int return_code = 0;
             //SORT THROUGH
         switch(opcode){
             case 0 :
