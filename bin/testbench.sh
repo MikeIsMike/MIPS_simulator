@@ -15,7 +15,7 @@ do
     result="${filename##*.}" #get expected result which is between last and second last dots
 #echo $result
 if [[ $testname == *"getc"* ]]; then
-    ${args[0]} $T < $fullfilename.txt
+    cat $fullfilename.txt | ${args[0]} $T
     EXITCODE=$?
 else
     ${args[0]} $T
