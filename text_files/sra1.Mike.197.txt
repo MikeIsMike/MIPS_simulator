@@ -1,0 +1,7 @@
+#depends on lui to work
+#shift right 28 times, it should replicate ms bit and shift right to get 197
+
+lui $t0, 0x8A00
+sra $2, $t0, 25
+jr $0
+nop

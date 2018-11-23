@@ -1,0 +1,8 @@
+#depends on addi to work
+#shift right 6 times
+
+addi $t0, $t0, 0xF3F
+addi $t1, $t1, 6
+srlv $2, $t0, $t1
+jr $0
+nop

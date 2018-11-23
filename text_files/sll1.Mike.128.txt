@@ -1,0 +1,6 @@
+#depends on addi to work
+
+addi $t0, $t0, 1
+sll $2, $t0, 7
+jr $0
+nop

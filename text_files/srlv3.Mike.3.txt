@@ -1,0 +1,8 @@
+#depends on addi to work
+#shift right 30 times
+
+addi $t0, $t0, 0xFFFF
+addi $t1, $t1, 30
+srlv $2, $t0, $t1
+jr $0
+nop

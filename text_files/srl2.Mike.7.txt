@@ -1,0 +1,7 @@
+#depends on addi to work
+
+addi $t0, $t0, 0xFFFF
+srl $2, $t0, 29
+
+jr $0
+nop

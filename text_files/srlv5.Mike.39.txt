@@ -1,0 +1,10 @@
+#depends on addi, xor to work
+#test if a negative number in $t1 would affect the function(it should shift right still disregarding the negative $t1)
+
+addi $t0, $t0, 0x4FFF
+addi $t2, $t2, 0xFFFF
+addi $t1, $t1, 118
+xor $t1, $t1, $t2
+srlv $2, $t0, $t1
+jr $0
+nop

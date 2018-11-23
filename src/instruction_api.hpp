@@ -58,11 +58,16 @@ int32_t sign_extend_immediate(const uint32_t instruction);
 
 bool check_overflow(int32_t add1, int32_t add2);
 
+bool check_overflow_sub(int32_t sub1, int32_t sub2);
+
 bool check_instruction_address(int32_t address);
 
 int execute_instruction(uint32_t instruction, bool branch_delay = false);
+<<<<<<< HEAD
 
 bool check_overflow_sub(int32_t sub1, int32_t sub2);
 
 void execute_branch_delay(int32_t& PROG_COUNTER, int32_t& offset, uint32_t& branch_delay, int& return_code);
 
+=======
+>>>>>>> a8dc5c767a570ef74e53c9dfb27ffa56f89d8806
