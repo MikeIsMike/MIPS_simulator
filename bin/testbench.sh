@@ -14,8 +14,9 @@ do
     author="${author%%.*}" #get author which is between first and second "."
     result="${filename##*.}" #get expected result which is between last and second last dots
 #echo $result
-if [[ $testname == *"getc"* ]]; then
-    cat $fullfilename.txt | ${args[0]} $T
+if [[ $testname == *"termination"* ]];
+then
+    cat ./test/input.txt | ${args[0]} $T
     EXITCODE=$?
 else
     ${args[0]} $T
