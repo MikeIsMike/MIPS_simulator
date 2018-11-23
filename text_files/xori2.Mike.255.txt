@@ -1,0 +1,8 @@
+#depends on addi,srl to work
+
+addi $t0, $t0, 0xFFFF
+xori $2, $t0, 0xFFFF
+srl $2, $2, 16
+
+jr $0
+nop

@@ -1,0 +1,13 @@
+#depends on addi, sll and add to work
+
+addi $t0, $t0, 2
+addi $t1, $t1, 1
+beq $0, $0, 2
+addi $t0, $t0, 2
+addi $t1, $t1, 2
+addi $t1, $t1, 1
+sll $2, $t1, 4
+add $2, $2, $t0
+
+jr $0
+nop

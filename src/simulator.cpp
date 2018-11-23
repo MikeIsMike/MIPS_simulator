@@ -25,7 +25,7 @@ int main(int argc, char* argv[]){
             }
             exit(return_code);
         }
-        
+
         if(REG[0] != 0){
             REG[0] = 0;
         }

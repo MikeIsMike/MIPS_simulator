@@ -1,0 +1,14 @@
+#depends on addi, add to work
+#detect branch offset error
+
+addi $t0, $t0, 1
+addi $t0, $t0, 1
+addi $t1, $t1, 2
+beq $t0, $t1, -3
+addi $t1, $t1, 1
+sll $2, $t0, 4
+add $2, $2, $t1
+
+
+jr $0
+nop
