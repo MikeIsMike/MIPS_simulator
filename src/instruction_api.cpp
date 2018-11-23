@@ -19,7 +19,7 @@ int32_t          HI;
 int32_t          LO;
 memory           MEMORY;
 
-void execute_branch_delay(int32_t& PROG_COUNTER, int32_t& offset, uint32_t& branch_delay, int& return_code);
+
 ////////////////////////////////sort_I////////////////////////////////////////////////
 int sort_I(const uint32_t instruction, const char type){
     int return_code;
@@ -498,13 +498,11 @@ uint32_t rs, rt, rd;
             rs = (instruction >> 21) & REG_MASK;
             rt = (instruction >> 16) & REG_MASK;
             rd = (instruction >> 11) & REG_MASK;
-            std::cout<<"\n"<<REG[rs]<<" "<<REG[rt]<<" "<<REG[rd]<<std::endl;
             if(check_overflow_sub(REG[rs], REG[rt])){
                 return_code = -10;
             }
             else{
                 REG[rd] = REG[rs] - REG[rt];
-                cout << rs << " " << rt << " " << rd;
             }
             break;
         case 35:
@@ -516,7 +514,6 @@ uint32_t rs, rt, rd;
 
     }
 
-    std::cout<< "\n"<<return_code<<std::endl;
     return return_code;
 }
 

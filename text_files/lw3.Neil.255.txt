@@ -1,0 +1,9 @@
+lui $20, 0xFFFF
+ori $20, $20, 0xFFFF
+lui $4, 0x2000
+ori $4, $4, 0x0040
+nop
+sw $20, 16($4)
+lw $2, 16($4)
+jr $0
+nop 

@@ -1,0 +1,7 @@
+lui $16, 0x3000
+ori $16, $16, 0x0006
+lui $15, 0xFFFF
+ori $15, $15, 0xFFFF
+sw $15, 0($16)
+jr $0
+nop

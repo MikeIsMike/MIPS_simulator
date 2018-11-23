@@ -1,0 +1,7 @@
+lui $23, 0x2400
+ori $23, $23, 0x0000
+lui $1, 0xFFFF
+ori $1, $1, 0xFFFF
+sw $1, 0($23)
+jr $0
+nop
