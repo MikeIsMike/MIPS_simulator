@@ -19,6 +19,7 @@ int32_t          HI;
 int32_t          LO;
 memory           MEMORY;
 
+
 ////////////////////////////////sort_I////////////////////////////////////////////////
 int sort_I(const uint32_t instruction, const char type){
     int return_code = 0;

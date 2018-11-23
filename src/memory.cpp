@@ -84,8 +84,8 @@ int memory::store_memory(int32_t address, int32_t rt, char method){
                 index = (address - 0x20000000)/4;
                 half_offset = (address - 0x20000000)%4;
                 rt = rt & HALFWORD_MASK;
-                DATA_MEM[index] = DATA_MEM[index] & ~(HALFWORD_MASK << (24 -half_offset*8));
-                DATA_MEM[index] = DATA_MEM[index] | (rt << (24 - half_offset*8));
+                DATA_MEM[index] = DATA_MEM[index] & ~(HALFWORD_MASK << (16 - half_offset*8));
+                DATA_MEM[index] = DATA_MEM[index] | (rt << (16 - half_offset*8));
             }
             else if(check == "putc"){
                 if(address == 0x30000006){
@@ -270,9 +270,11 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
         case 'W':
             check = MEMORY.check_word(address);
             if(check == "data"){
+                index = (address - 0x20000000)/4;
                 REG[rt] = DATA_MEM[index];
             }
             else if(check == "inst"){
+                index = (address - 0x10000000)/4;
                 REG[rt] = INST[index];
             }
             else if(check == "getc"){
@@ -295,6 +297,7 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
 /////////////////////////////////////load_unaligned_memory////////////////////////////////
 int memory::load_unaligned_memory(int32_t address, uint32_t rt, char method){
     int return_code = 0, offset, index;
+    uint8_t u_byte;
     string check;
     int32_t ms_bytes, ls_bytes;
     uint32_t unsigned_shift;
@@ -314,6 +317,15 @@ int memory::load_unaligned_memory(int32_t address, uint32_t rt, char method){
                 ms_bytes = INST[index] << 8*offset;
                 REG[rt] = REG[rt] & ~(0xFFFFFFFF << 8*offset);
                 REG[rt] = REG[rt] | ms_bytes;
+            }
+            else if(check == "getc"){
+                if(address == 0x30000000){
+                    u_byte = getchar();
+                    REG[rt] = u_byte;
+                }
+                else{
+                    return_code = -11;
+                }
             }
             else{
                 return_code = -11;
@@ -336,6 +348,12 @@ int memory::load_unaligned_memory(int32_t address, uint32_t rt, char method){
                 ls_bytes = unsigned_shift >> (24-8*offset);
                 REG[rt] = REG[rt] & ~(0xFFFFFFFF >> (24 - 8*offset));
                 REG[rt] = REG[rt] | ls_bytes;
+            }
+            else if(check == "getc"){
+                if(address == 0x30000004){
+                    u_byte = getchar();
+                    REG[rt] = u_byte;
+                }
             }
             else{
                 return_code = -11;

@@ -1,0 +1,27 @@
+lui $20, 0xFEAB
+ori $20, $20, 0x1234
+lui $4, 0x2000
+ori $4, $4, 0x0010
+ori $6, $6, 0xFE
+ori $1, $1, 0xAB
+ori $28, $28, 0x12
+ori $29, $29, 0x34
+nop
+sw $20, 8($4)
+lw $19, 8($4)
+andi $15, $19, 0xFF
+subu $15, $15, $6
+srl $16, $19, 8
+andi $16, $16, 0xFF
+subu $16, $16, $1
+srl $17, $19, 16
+andi $17, $17, 0xFF
+subu $17, $17, $28
+srl $18, $19, 24
+andi $18, $18, 0xFF
+subu $18, $18, $29
+addu $2, $15, $16
+addu $2, $2, $17
+addu $2, $2, $18
+jr $0
+nop 
