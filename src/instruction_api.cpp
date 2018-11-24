@@ -563,17 +563,21 @@ int branch_instruction(const uint32_t instruction, const char type){
 		}
 		break;
 
-	case 1: //BGEZ
+	case 1:
 		rs = (instruction >> 21) & REG_MASK;
 		rt = (instruction >> 16) & REG_MASK; //to distinguish BGEZ, BGEZAL and etc.
+        offset0 = (instruction & IMMEDIATE_MASK); //temporary variable for signed extension
+        offset = offset0 << 2; //shift left by 2 to get 18 bits
 		switch (rt) {
-		case 1://BGEZ
+		case 1:
+        //BGEZ
 			if ((REG[rs] >= 0)/*&&(rs!=0)*/) {
 				execute_branch_delay(PROG_COUNTER, offset, branch_delay, return_code);
 			}
 			break;
 
-		case 0b10001: //BGEZAL
+		case 0b10001:
+        //BGEZAL
 			if (REG[rs] >= 0) {
 				if (MEMORY.check_word(PROG_COUNTER + offset + 4)=="inst") {
 					PROG_COUNTER = PROG_COUNTER + 4;
@@ -594,16 +598,15 @@ int branch_instruction(const uint32_t instruction, const char type){
 			}
 			break;
 
-		case 0://BLTZ
-			rs = (instruction >> 21) & REG_MASK;
-			offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
-			offset = offset0 << 2;
+		case 0:
+        //BLTZ
 			if (REG[rs]<0) {
 				execute_branch_delay(PROG_COUNTER, offset, branch_delay, return_code);
 			}
 			break;
 
-		case 0b10000://BLTZAL
+		case 0b10000:
+        //BLTZAL
 			if (REG[rs]<0) {
 				if (MEMORY.check_word(PROG_COUNTER + offset + 4) == "inst") {
 					PROG_COUNTER = PROG_COUNTER + 4;
@@ -628,7 +631,8 @@ int branch_instruction(const uint32_t instruction, const char type){
 		break;
 
 
-	case 7://BGTZ
+	case 7:
+    //BGTZ
 		rs = (instruction >> 21) & REG_MASK;
 		offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
 		offset = offset0 << 2;
@@ -637,7 +641,8 @@ int branch_instruction(const uint32_t instruction, const char type){
 		}
 		break;
 
-	case 6://BLEZ
+	case 6:
+    //BLEZ
 		rs = (instruction >> 21) & REG_MASK;
 		offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
 		offset = offset0 << 2;
@@ -646,7 +651,8 @@ int branch_instruction(const uint32_t instruction, const char type){
 		}
 		break;
 
-	case 5://BNE
+	case 5:
+    //BNE
 		rs = (instruction >> 21) & REG_MASK;
 		rt = (instruction >> 16) & REG_MASK;
 		offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits

@@ -2,7 +2,7 @@
 #it should branch once
 
 
-bgez $0, 2
+bgtz $0, 2
 addi $t0, $t0, 2
 addi $t0, $t0, 2
 addi $t0, $t0, 2
