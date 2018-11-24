@@ -202,11 +202,11 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                 index = (address - 0x20000000)/4;
                 half_offset = (address - 0x20000000)%4;
                 if(sign){
-                    halfword = (DATA_MEM[index] >> (24-8*half_offset)) & HALFWORD_MASK;
+                    halfword = (DATA_MEM[index] >> (16-8*half_offset)) & HALFWORD_MASK;
                     data = halfword;
                 }
                 else{
-                    u_halfword = (DATA_MEM[index] >> (24-8*half_offset)) & HALFWORD_MASK;
+                    u_halfword = (DATA_MEM[index] >> (16-8*half_offset)) & HALFWORD_MASK;
                     data = u_halfword;
                 }
                 REG[rt] = data;
@@ -215,11 +215,11 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                 index = (address - 0x10000000)/4;
                 half_offset = (address - 0x10000000)%4;
                 if(sign){
-                    halfword = (INST[index] >> (24-8*half_offset)) & HALFWORD_MASK;
+                    halfword = (INST[index] >> (16-8*half_offset)) & HALFWORD_MASK;
                     data = halfword;
                 }
                 else{
-                    u_halfword = (INST[index] >> (24-8*half_offset)) & HALFWORD_MASK;
+                    u_halfword = (INST[index] >> (16-8*half_offset)) & HALFWORD_MASK;
                     data = u_halfword;
                 }
                 REG[rt] = data;

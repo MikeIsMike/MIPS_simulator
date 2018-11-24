@@ -1,0 +1,24 @@
+lui $1, 0x2000
+ori $1, $1, 0x0000
+lui $3, 0x1234
+ori $3, $3, 0xE3AB
+ori $5, $5, 0xE3
+sw $3, 0($1)
+lbu $4, 2($1)
+andi $10, $4, 0xFF
+sub $10, $10, $5
+srl $11, $4, 8
+andi $11, $11, 0xFF
+srl $12, $4, 16
+andi $12, $12, 0xFF
+srl $13, $4, 24
+andi $13, $13, 0xFF
+addu $2, $10, $11
+addu $2, $2, $12
+addu $2, $2, $13
+jr $0
+nop
+
+
+
+   

@@ -1,0 +1,10 @@
+lui $30, 0x1000
+ori $30, $30, 0x0009
+nop
+addiu $t1, $t1, 0xa
+addiu $t2, $t2, 0xb
+addiu $t3, $t3, 0xc
+addiu $t4, $t4, 0xd
+lb $2, 1($30)
+jr $0
+nop
