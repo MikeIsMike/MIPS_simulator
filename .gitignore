@@ -2,3 +2,6 @@
 src/simulator.o
 *.o
 testy.c
+abc.cpp
+a.txt
+prog

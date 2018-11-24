@@ -549,6 +549,7 @@ int branch_instruction(const uint32_t instruction, const char type){
 	uint32_t branch_delay;
 	int16_t offset0;
 	int32_t rs, rt, offset; //they are all signed becuase case 1 requires signed rs.
+	/////////////////////////////////offset needs to be updated
 	int return_code = 0;
 	switch (opcode) {
 	case 4:
@@ -567,7 +568,7 @@ int branch_instruction(const uint32_t instruction, const char type){
 		rt = (instruction >> 16) & REG_MASK; //to distinguish BGEZ, BGEZAL and etc.
 		switch (rt) {
 		case 1://BGEZ
-			if ((REG[rs] >= 0)&&(rs!=0)) {
+			if ((REG[rs] >= 0)/*&&(rs!=0)*/) {
 				execute_branch_delay(PROG_COUNTER, offset, branch_delay, return_code);
 			}
 			break;

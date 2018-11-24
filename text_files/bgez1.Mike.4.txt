@@ -1,0 +1,11 @@
+#depends on addi, to work
+
+
+bgez $t0, 2
+addi $t0, $t0, 2
+addi $t0, $t0, 2
+addi $t0, $t0, 2
+addi $2, $0, 0
+
+jr $0
+nop
