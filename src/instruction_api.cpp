@@ -346,7 +346,7 @@ int mul_instruction(const uint32_t instruction, const char type){
     uint32_t rs,rt;
     uint32_t u_regRs, u_regRt;
 	int64_t regRs, regRt;
-    uint64_t u_mul;
+    uint64_t u_mul, u_regRs0, u_regRt0;
     int64_t mul;
     rs = (instruction >> 21) & REG_MASK;
     rt = (instruction >> 16) & REG_MASK;
@@ -363,7 +363,9 @@ int mul_instruction(const uint32_t instruction, const char type){
             //MULTU
             u_regRs = REG[rs];
             u_regRt = REG[rt];
-            u_mul = u_regRs*u_regRt;
+			u_regRs0 = u_regRs;
+			u_regRt0 = u_regRt;
+            u_mul = u_regRs0*u_regRt0;
             HI = (u_mul >> 32) & 0xFFFFFFFF;
             LO = u_mul & 0xFFFFFFFF;
             break;

@@ -1,6 +1,5 @@
 #depends on addi, to work
-#it should branch once
-
+#it shouldn't branch on 0
 
 bgtz $0, 2
 addi $t0, $t0, 2

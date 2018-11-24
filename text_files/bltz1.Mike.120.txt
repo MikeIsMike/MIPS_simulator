@@ -1,0 +1,12 @@
+#depends on addi, to work
+#it shouldn't branch on equal to 0
+
+
+bltz $0, 2
+addi $t0, $t0, 10
+addi $t0, $t0, 35
+addi $t0, $t0, 75
+addi $2, $t0, 0
+
+jr $0
+nop

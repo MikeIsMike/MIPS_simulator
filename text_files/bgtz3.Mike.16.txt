@@ -1,5 +1,5 @@
 #depends on addi to work
-#branch twice
+#branch twice on greater than 0
 
 addi $t1, $t1, 4
 addi $t1, $t1, 0xFFFF

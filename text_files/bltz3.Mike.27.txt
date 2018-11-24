@@ -1,0 +1,12 @@
+#depends on addi to work
+#branch twice on less than zero
+
+addi $t1, $t1, 0xFFFD
+addi $t1, $t1, 1
+bltz $t1, -2
+addi $t0, $t0, 5
+addi $t0, $t0, 12
+addi $2, $t0, 0
+
+jr $0
+nop
