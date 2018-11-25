@@ -1,14 +1,19 @@
 #depends on andi, addi, add, lui, ori, mfhi, mflo, srl, xor to work
-#smallest number multiply by smallest number
+#negative number divided by negative number(unsigned equivalents)
 
-lui $t0, 0x8000
-lui $t1, 0x8000
-
+lui $t0, 0xF000
+ori $t0, $t0, 0x0000
+lui $t1, 0xFFFF
+ori $t1, $t1, 0xFFFD
 
 #t4 and t5 store expected results
-lui $t4, 0xC000
-addi $t5, $0, 0
-mult $t0, $t1
+lui $t4, 0xF000
+ori $t4, $t4, 0x0000
+lui $t5, 0x0000
+ori $t5, $t5, 0x0000
+divu $t0, $t1
+nop
+nop
 mfhi $t2
 mflo $t3
 

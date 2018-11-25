@@ -18,19 +18,41 @@ if [[ $testname == *"getc"* ]];
 then
     cat ./test/input.txt | ${args[0]} $T
     EXITCODE=$?
+    if [ $result -eq $EXITCODE ]; #space between square brackets are necessary
+    then
+        echo "$NUMBER, $testname, pass, $author" #author is the between first and second dots
+    else
+        echo "$NUMBER, $testname, fail, $author (expected result $result, got $EXITCODE)"
+    fi
+        NUMBER=$((NUMBER+1))
+
+elif [[ $testname == *"divideByZero"* ]];
+then
+    ${args[0]} $T
+    EXITCODE=$?
+    if [ $result -ne $EXITCODE ]; #space between square brackets are necessary
+    then
+        echo "$NUMBER, $testname, pass, $author" #author is the between first and second dots
+    else
+        echo "$NUMBER, $testname, fail, $author (result cannot be $result, got $EXITCODE)"
+    fi
+        NUMBER=$((NUMBER+1))
+
 else
     ${args[0]} $T
     EXITCODE=$?
+    if [ $result -eq $EXITCODE ]; #space between square brackets are necessary
+    then
+        echo "$NUMBER, $testname, pass, $author" #author is the between first and second dots
+    else
+        echo "$NUMBER, $testname, fail, $author (expected result $result, got $EXITCODE)"
+    fi
+        NUMBER=$((NUMBER+1))
+
 fi
+
+done
 
 
 
 #needs to get result from simulator to replace 0 here!!!!!!
-if [ $result -eq $EXITCODE ]; #space between square brackets are necessary
-then
-    echo "$NUMBER, $testname, pass, $author" #author is the between first and second dots
-else
-    echo "$NUMBER, $testname, fail, $author (expected result $result, got $EXITCODE)"
-fi
-    NUMBER=$((NUMBER+1))
-done

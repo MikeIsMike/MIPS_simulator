@@ -1,0 +1,55 @@
+#depends on andi, addi, add, lui, ori, mfhi, mflo, srl, xor to work
+#positive number divided by negative number(unsigned equivalents)
+
+lui $t0, 0x7FFF
+ori $t0, $t0, 0xFFFF
+lui $t1, 0xF0A3
+ori $t1, $t1, 0xF101
+
+#t4 and t5 store expected results
+lui $t4, 0x7FFF
+ori $t4, $t4, 0xFFFF
+addiu $t5, $0, 0x0
+divu $t0, $t1
+nop
+nop
+mfhi $t2
+mflo $t3
+
+xor $t2, $t2, $t4
+xor $t3, $t3, $t5
+
+andi $t7, $t2, 15
+add $2, $2, $t7
+
+srl $t2, $t2, 8
+andi $t7, $t2, 15
+add $2, $2, $t7
+
+srl $t2, $t2, 8
+andi $t7, $t2, 15
+add $2, $2, $t7
+
+srl $t2, $t2, 8
+andi $t7, $t2, 15
+add $2, $2, $t7
+
+andi $t7, $t3, 15
+add $2, $2, $t7
+
+srl $t3, $t3, 8
+andi $t7, $t3, 15
+add $2, $2, $t7
+
+srl $t3, $t3, 8
+andi $t7, $t3, 15
+add $2, $2, $t7
+
+srl $t3, $t3, 8
+andi $t7, $t3, 15
+add $2, $2, $t7
+
+addi $2, $2, 1
+
+jr $0
+nop

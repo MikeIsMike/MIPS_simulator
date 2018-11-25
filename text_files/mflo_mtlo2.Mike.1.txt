@@ -1,0 +1,28 @@
+#depends on add, addi, andi, srl, xor to work
+
+addi $t0, $0, 0x7AF9
+addi $t1, $0, 0x3F5A
+mtlo $t0
+mflo $t1
+xor $t2, $t1, $t0
+
+andi $t7, $t2, 15
+add $2, $2, $t7
+
+srl $t2, $t2, 8
+andi $t7, $t2, 15
+add $2, $2, $t7
+
+srl $t2, $t2, 8
+andi $t7, $t2, 15
+add $2, $2, $t7
+
+srl $t2, $t2, 8
+andi $t7, $t2, 15
+add $2, $2, $t7
+
+addi $2, $2, 1
+
+jr $0
+nop
+

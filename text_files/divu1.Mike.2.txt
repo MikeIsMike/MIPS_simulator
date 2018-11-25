@@ -1,0 +1,12 @@
+#depends on addiu, addu to work
+
+addiu $t0, $t0, 4
+addiu $t1, $t1, 3
+divu $t0, $t1
+nop
+nop
+mfhi $t2
+mflo $2
+addu $2, $2, $t2
+jr $0
+nop
