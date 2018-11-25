@@ -1,0 +1,12 @@
+#depends on addi to work
+#it shouldn't branch on greater than 0
+
+addi $t1, $t1, 1
+addi $t0, $t0, 1
+bltz $t1, -2
+addi $t0, $t0, 5
+addi $t0, $t0, 12
+addi $2, $t0, 0
+
+jr $0
+nop

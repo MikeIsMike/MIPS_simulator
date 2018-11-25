@@ -1,0 +1,10 @@
+#depends on addi, add to work
+
+addi $t0, $t0, 5
+addi $t1, $t1, 6
+multu $t0, $t1
+mfhi $t2
+mflo $2
+add $2, $2, $t2
+jr $0
+nop

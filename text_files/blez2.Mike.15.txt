@@ -1,0 +1,12 @@
+#depends on addi to work
+#positive value in register, shouldn't branch
+
+addi $t1, $t1, 0x7FFF
+blez $t1, 2
+addi $t0, $t0, 5
+addi $t0, $t0, 5
+addi $t0, $t0, 5
+addi $2, $t0, 0
+
+jr $0
+nop

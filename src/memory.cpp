@@ -191,6 +191,7 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                         }
                     }
                 }
+
             }
             else{
                 return_code = -11;

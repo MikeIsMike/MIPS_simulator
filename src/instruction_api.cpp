@@ -346,7 +346,7 @@ int mul_instruction(const uint32_t instruction, const char type){
     uint32_t rs,rt;
     uint32_t u_regRs, u_regRt;
 	int64_t regRs, regRt;
-    uint64_t u_mul;
+    uint64_t u_mul, u_regRs0, u_regRt0;
     int64_t mul;
     rs = (instruction >> 21) & REG_MASK;
     rt = (instruction >> 16) & REG_MASK;
@@ -363,7 +363,9 @@ int mul_instruction(const uint32_t instruction, const char type){
             //MULTU
             u_regRs = REG[rs];
             u_regRt = REG[rt];
-            u_mul = u_regRs*u_regRt;
+			u_regRs0 = u_regRs;
+			u_regRt0 = u_regRt;
+            u_mul = u_regRs0*u_regRt0;
             HI = (u_mul >> 32) & 0xFFFFFFFF;
             LO = u_mul & 0xFFFFFFFF;
             break;
@@ -549,6 +551,7 @@ int branch_instruction(const uint32_t instruction, const char type){
 	uint32_t branch_delay;
 	int16_t offset0;
 	int32_t rs, rt, offset; //they are all signed becuase case 1 requires signed rs.
+	/////////////////////////////////offset needs to be updated
 	int return_code = 0;
 	switch (opcode) {
 	case 4:
@@ -562,17 +565,21 @@ int branch_instruction(const uint32_t instruction, const char type){
 		}
 		break;
 
-	case 1: //BGEZ
+	case 1:
 		rs = (instruction >> 21) & REG_MASK;
 		rt = (instruction >> 16) & REG_MASK; //to distinguish BGEZ, BGEZAL and etc.
+        offset0 = (instruction & IMMEDIATE_MASK); //temporary variable for signed extension
+        offset = offset0 << 2; //shift left by 2 to get 18 bits
 		switch (rt) {
-		case 1://BGEZ
-			if ((REG[rs] >= 0)&&(rs!=0)) {
+		case 1:
+        //BGEZ
+			if ((REG[rs] >= 0)/*&&(rs!=0)*/) {
 				execute_branch_delay(PROG_COUNTER, offset, branch_delay, return_code);
 			}
 			break;
 
-		case 0b10001: //BGEZAL
+		case 0b10001:
+        //BGEZAL
 			if (REG[rs] >= 0) {
 				if (MEMORY.check_word(PROG_COUNTER + offset + 4)=="inst") {
 					PROG_COUNTER = PROG_COUNTER + 4;
@@ -593,16 +600,15 @@ int branch_instruction(const uint32_t instruction, const char type){
 			}
 			break;
 
-		case 0://BLTZ
-			rs = (instruction >> 21) & REG_MASK;
-			offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
-			offset = offset0 << 2;
+		case 0:
+        //BLTZ
 			if (REG[rs]<0) {
 				execute_branch_delay(PROG_COUNTER, offset, branch_delay, return_code);
 			}
 			break;
 
-		case 0b10000://BLTZAL
+		case 0b10000:
+        //BLTZAL
 			if (REG[rs]<0) {
 				if (MEMORY.check_word(PROG_COUNTER + offset + 4) == "inst") {
 					PROG_COUNTER = PROG_COUNTER + 4;
@@ -627,7 +633,8 @@ int branch_instruction(const uint32_t instruction, const char type){
 		break;
 
 
-	case 7://BGTZ
+	case 7:
+    //BGTZ
 		rs = (instruction >> 21) & REG_MASK;
 		offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
 		offset = offset0 << 2;
@@ -636,7 +643,8 @@ int branch_instruction(const uint32_t instruction, const char type){
 		}
 		break;
 
-	case 6://BLEZ
+	case 6:
+    //BLEZ
 		rs = (instruction >> 21) & REG_MASK;
 		offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits
 		offset = offset0 << 2;
@@ -645,7 +653,8 @@ int branch_instruction(const uint32_t instruction, const char type){
 		}
 		break;
 
-	case 5://BNE
+	case 5:
+    //BNE
 		rs = (instruction >> 21) & REG_MASK;
 		rt = (instruction >> 16) & REG_MASK;
 		offset0 = (instruction & IMMEDIATE_MASK); //shift left by 2 to get 18 bits

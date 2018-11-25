@@ -1,0 +1,11 @@
+#depends on addi, to work
+#it shouldn't branch on 0
+
+bgtz $0, 2
+addi $t0, $t0, 2
+addi $t0, $t0, 2
+addi $t0, $t0, 2
+addi $2, $t0, 0
+
+jr $0
+nop
