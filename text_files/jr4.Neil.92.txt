@@ -1,0 +1,17 @@
+addiu $2, $2, 0x5
+lui $3, 0x1000
+ori $3, $3, 0x002C
+jr $3
+addiu $2, $2, 0x50
+ori $2, $2, 0xFF
+subu $2, $0, $2
+jr $0
+addiu $2, $2, 0x2
+addiu $2, $2, 0x5
+addiu $2, $2, 0x7
+addiu $2, $2, 0x4
+addiu $2, $2, 0x1
+lui $4, 0x1000
+ori $4, $4, 0x001C
+jr $4
+nop

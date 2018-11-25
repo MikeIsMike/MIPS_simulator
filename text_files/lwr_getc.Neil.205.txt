@@ -1,0 +1,8 @@
+lui $5, 0x3000
+lui $6, 0xABCD
+ori $6, $6, 0x5678
+lwr $6, 3($5)
+lwr $7, 3($5)
+addu $2, $6, $7
+jr $0
+nop

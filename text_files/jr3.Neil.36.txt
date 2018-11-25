@@ -1,0 +1,11 @@
+addiu $2, $2, 0x5
+lui $3, 0x1000
+ori $3, $3, 0x001C
+jr $3
+ori $2, $2, 0x10
+addiu $2, $2, 0x5
+addiu $2, $2, 0x6
+addiu $2, $2, 0x7
+addiu $2, $2, 0x8
+jr $0
+nop

@@ -1,0 +1,11 @@
+lui $20, 0x23BE
+ori $20, $20, 0x4578
+addiu $t3, $t3, 0x50
+addiu $t4, $t4, 0x60
+addiu $t5, $t5, 0x70
+lui $10, 0x1000
+ori $10, $10, 0x0008
+lwr $20, 1($10)
+srl $2, $20, 8 
+jr $0
+nop

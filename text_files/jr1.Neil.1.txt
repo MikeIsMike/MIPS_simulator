@@ -1,0 +1,6 @@
+ori $2, $2, 0x1
+jr $0
+nop
+addiu $2, $2, 0x5
+addiu $2, $2, 0x5
+addiu $2, $2, 0xA

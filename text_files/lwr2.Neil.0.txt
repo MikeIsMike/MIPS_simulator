@@ -1,0 +1,28 @@
+lui $1, 0x2010
+ori $1, $1, 0x0004
+lui $3, 0xB567
+ori $3, $3, 0xA123
+lui $4, 0xFFAA
+ori $4, $4, 0xDC73
+ori $5, $5, 0xB5
+ori $6, $6, 0x67
+ori $7, $7, 0xA1
+ori $8, $8, 0xFF
+sw $4, 0($1)
+lwr $3, 0($1)
+andi $9, $3, 0xFF
+subu $9, $9, $8
+srl $10, $3, 8
+andi $10, $10, 0xFF
+subu $10, $10, $7
+srl $11, $3, 16
+andi $11, $11, 0xFF
+subu $11, $11, $6
+srl $12, $3, 24
+andi $12, $12, 0xFF
+subu $12, $12, $5
+addu $2, $9, $10
+addu $2, $2, $11
+addu $2, $2, $12
+jr $0
+nop

@@ -1,0 +1,11 @@
+lui $1, 0x2010
+ori $1, $1, 0x0004
+lui $2, 0x5a5a
+ori $2, $2, 0x5a5a
+lui $3, 0xFFFF
+ori $3, $3, 0xDC73
+sw $3, 0($1)
+lwl $2, 1($1)
+srl $2, $2, 16
+jr $0
+nop

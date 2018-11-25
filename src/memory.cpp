@@ -350,9 +350,12 @@ int memory::load_unaligned_memory(int32_t address, uint32_t rt, char method){
                 REG[rt] = REG[rt] | ls_bytes;
             }
             else if(check == "getc"){
-                if(address == 0x30000004){
+                if(address == 0x30000003){
                     u_byte = getchar();
                     REG[rt] = u_byte;
+                }
+                else{
+                    return_code = -11;
                 }
             }
             else{
