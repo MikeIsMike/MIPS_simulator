@@ -1,20 +1,28 @@
 #!/bin/bash
 args=("$@")
-echo ${args[0]} #${args[1]} ${args[2]}
+echo args[0] is ${args[0]} #${args[1]} ${args[2]}
 NUMBER=0
-TESTS="./test/*"
+TESTS="./test/*.bin"
 
 for T in $TESTS
 do
-    ${args[0]} $T
-    EXITCODE=$?
-    filename=$(basename "$T") #get rid of path to the file
-    filename="${filename%.*}" #get filename without extension
+    fullfilename="${T%.*}" #get filename without extension
+    filename=$(basename "$fullfilename") #get rid of path to the file
+
     testname="${filename%%.*}" #get testname which is before first "."
     author="${filename#*.}" #get what is after the first "."
     author="${author%%.*}" #get author which is between first and second "."
-    #echo $filename
     result="${filename##*.}" #get expected result which is between last and second last dots
+#echo $result
+if [[ $testname == *"getc"* ]];
+then
+    cat ./test/input.txt | ${args[0]} $T
+    EXITCODE=$?
+else
+    ${args[0]} $T
+    EXITCODE=$?
+fi
+
 
 
 #needs to get result from simulator to replace 0 here!!!!!!

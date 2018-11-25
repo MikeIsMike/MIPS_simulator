@@ -1,7 +1,0 @@
-#depends on addi to work
-#try shifting 0b00110010 times, it should shift 0b10010 times(lowest 5 bits)
-
-addi $t0, $t0, 0xFFFF
-sll $2, $t0, 50
-jr $0
-nop

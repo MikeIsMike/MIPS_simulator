@@ -1,0 +1,12 @@
+#depends on addi, to work
+#it should branch once
+
+
+blez $0, 2
+addi $t0, $t0, 3
+addi $t0, $t0, 3
+addi $t0, $t0, 5
+addi $2, $t0, 0
+
+jr $0
+nop
