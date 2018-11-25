@@ -1,0 +1,4 @@
+jal 0x3FFFFFF
+nop
+jr $0
+nop

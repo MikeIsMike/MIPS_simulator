@@ -1,7 +1,7 @@
 addiu $2, $2, 0x5
 lui $3, 0x1000
 ori $3, $3, 0x001C
-jr $3
+jalr $3
 ori $2, $2, 0x10
 addiu $2, $2, 0x5
 addiu $2, $2, 0x6

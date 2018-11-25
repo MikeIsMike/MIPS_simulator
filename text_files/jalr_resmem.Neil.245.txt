@@ -1,0 +1,7 @@
+lui $2, 0x1100
+ori $2, $2, 0x1000
+jalr $2
+nop
+addiu $3, $3, 0x50
+addiu $3, $3, 0x50
+addiu $3, $3, 0x100

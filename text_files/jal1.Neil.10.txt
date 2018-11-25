@@ -1,0 +1,8 @@
+jal 0x14
+addiu $2, $2, 0x5
+addiu $2, $2, 0x5
+addiu $2, $2, 0x5
+addiu $2, $2, 0x5
+addiu $2, $2, 0x5
+jr $0
+nop

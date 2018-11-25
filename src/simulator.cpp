@@ -13,7 +13,6 @@ int main(int argc, char* argv[]){
 
     while(PROG_COUNTER != 0){
         instruction = MEMORY.get_instruction(PROG_COUNTER);
-
         return_code = execute_instruction(instruction);
 
         if(return_code){

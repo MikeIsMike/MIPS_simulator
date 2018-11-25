@@ -153,6 +153,7 @@ int add_instruction(const uint32_t instruction, const char type){
                     REG[rd] = REG[rs] + REG[rt];
                     break;
             }
+            break;
         case 'I' :
             switch(instruction >> 26){
                 case 8 :
@@ -177,6 +178,7 @@ int add_instruction(const uint32_t instruction, const char type){
                     REG[rt] = REG[rs] + immediate;
                     break;
             }
+            break;
     }
     return return_code;
 }
@@ -241,6 +243,7 @@ int jump_instruction(const uint32_t instruction, const char type){
                     }
                     break;
             }
+            break;
         case 'R' :
             switch(instruction & FUNCT_MASK){
                 case 8 :
@@ -292,6 +295,7 @@ int jump_instruction(const uint32_t instruction, const char type){
                     }
                     break;
             }
+            break;
     }
     return return_code;
 }
@@ -742,6 +746,7 @@ int set_instruction(const uint32_t instruction, const char type){
                     }
                     break;
             }
+            break;
         case 'I' :
             switch(instruction >> 26){
                 case 10 :
@@ -772,6 +777,7 @@ int set_instruction(const uint32_t instruction, const char type){
                     }
                     break;
             }
+            break;
     }
     return return_code;
 }

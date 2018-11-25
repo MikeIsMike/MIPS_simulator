@@ -1,0 +1,23 @@
+jal 28
+addu $10, $0, $31
+addiu $2, $2, 1
+addiu $2, $2, 1
+jr $0
+nop
+addiu $2, $2, 1
+jal 52
+addu $11, $0, $31
+addiu $2, $2, 1
+jr $10
+nop
+addiu $2, $2, 1
+jal 72
+nop
+addiu $2, $2, 1
+jr $11
+nop
+addiu $2, $2, 1
+jr $31
+nop
+addiu $2, $2, 1
+

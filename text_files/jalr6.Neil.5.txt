@@ -1,0 +1,30 @@
+lui $1, 0x1000
+ori $1, $1, 0x0034
+lui $3, 0x1000
+ori $3, $3, 0x0050
+lui $4, 0x1000
+ori $4, $4, 0x0068
+jalr $10, $1
+nop
+addiu $2, $2, 1
+addiu $2, $2, 1
+jr $0
+nop
+addiu $2, $2, 1
+jalr $11, $3
+nop
+addiu $2, $2, 1
+addiu $2, $2, 1
+jr $10
+nop
+addiu $2, $2, 1
+jalr $4
+nop
+addiu $2, $2, 1
+jr $11
+nop
+addiu $2, $2, 1
+jr $31
+nop
+addiu $2, $2, 1
+

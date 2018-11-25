@@ -1,0 +1,12 @@
+addiu $2, $2, 0x5
+addiu $2, $2, 0x5
+jal 28 
+addiu $2, $2, 0x5
+jr $0
+nop
+addiu $2, $2, 0x7
+addiu $2, $2, 0x6
+addiu $2, $2, 0x6
+jr $31
+nop
+
