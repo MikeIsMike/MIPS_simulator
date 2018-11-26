@@ -1,0 +1,16 @@
+#depends on addi to work
+#zero, it shouldn't branch
+
+bltzal $0, 6
+addi $t0, $t0, 2
+addi $t0, $t0, 2
+addi $t0, $t0, 2
+addi $2, $t0, 0
+
+jr $0
+nop
+
+addi $t0, $t0, 2
+addi $t0, $t0, 2
+jr $31
+nop

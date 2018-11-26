@@ -1,0 +1,20 @@
+#depends on addi, jr to work
+#it should branch once
+
+addi $t1, $t1, 0xFFFF
+bltzal $t1, 6
+addi $t0, $t0, 2
+addi $t0, $t0, 2
+addi $t0, $t0, 2
+addi $2, $t0, 0
+
+
+
+jr $0
+nop
+
+
+addi $t0, $t0, 2
+addi $t0, $t0, 2
+jr $31
+nop
