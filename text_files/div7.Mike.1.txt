@@ -1,0 +1,54 @@
+#depends on andi, addi, add, lui, ori, mfhi, mflo, srl, xor to work
+#zero number divided by negative number
+
+lui $t0, 0x0000
+ori $t0, $t0, 0x0000
+lui $t1, 0xFFFF
+ori $t1, $t1, 0xFFFD
+
+#t4 and t5 store expected results
+addi $t4, $0, 0
+addi $t5, $0, 0
+div $t0, $t1
+nop
+nop
+mfhi $t2
+mflo $t3
+
+xor $t2, $t2, $t4
+xor $t3, $t3, $t5
+
+andi $t7, $t2, 15
+add $2, $2, $t7
+
+srl $t2, $t2, 8
+andi $t7, $t2, 15
+add $2, $2, $t7
+
+srl $t2, $t2, 8
+andi $t7, $t2, 15
+add $2, $2, $t7
+
+srl $t2, $t2, 8
+andi $t7, $t2, 15
+add $2, $2, $t7
+
+andi $t7, $t3, 15
+add $2, $2, $t7
+
+srl $t3, $t3, 8
+andi $t7, $t3, 15
+add $2, $2, $t7
+
+srl $t3, $t3, 8
+andi $t7, $t3, 15
+add $2, $2, $t7
+
+srl $t3, $t3, 8
+andi $t7, $t3, 15
+add $2, $2, $t7
+
+addi $2, $2, 1
+
+jr $0
+nop

@@ -331,6 +331,9 @@ int div_instruction(const uint32_t instruction, const char type){
     uint32_t u_regRs, u_regRt;
     rs = (instruction >> 21) & REG_MASK;
     rt = (instruction >> 16) & REG_MASK;
+    if(REG[rt]==0){
+        return return_code;
+    }
     switch(instruction & FUNCT_MASK){
         case 26:
             //DIV
@@ -371,7 +374,7 @@ int mul_instruction(const uint32_t instruction, const char type){
             //MULTU
             u_regRs = REG[rs];
             u_regRt = REG[rt];
-			u_regRs0 = u_regRs;
+			u_regRs0 = u_regRs; //temporary variable for zero-extension
 			u_regRt0 = u_regRt;
             u_mul = u_regRs0*u_regRt0;
             HI = (u_mul >> 32) & 0xFFFFFFFF;

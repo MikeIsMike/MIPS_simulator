@@ -1,0 +1,19 @@
+#depends on andi, addi, add, lui, ori, mfhi, mflo, srl, xor to work
+#number divided by 0
+
+lui $t0, 0xF000
+ori $t0, $t0, 0x0000
+lui $t1, 0x0
+ori $t1, $t1, 0x0
+
+#t4 and t5 store expected results
+div $t0, $t1
+nop
+nop
+mfhi $t2
+mflo $t3
+
+add $2, $t2, $t3
+
+jr $0
+nop
