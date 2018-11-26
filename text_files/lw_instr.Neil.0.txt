@@ -5,6 +5,7 @@ ori $t1, $t1, 0x63
 ori $t2, $t2, 0x00
 ori $t3, $t3, 0x04
 lw $t4, 0($v1)
+nop
 andi $t5, $t4, 0xFF
 subu $t5, $t5, $t0
 srl $t6, $t4, 8

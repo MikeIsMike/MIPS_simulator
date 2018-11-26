@@ -5,6 +5,7 @@ ori $3, $3, 0xE3AB
 ori $5, $5, 0xE3
 sw $3, 0($1)
 lbu $4, 2($1)
+nop
 andi $10, $4, 0xFF
 sub $10, $10, $5
 srl $11, $4, 8

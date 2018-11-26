@@ -5,6 +5,7 @@ ori $3, $3, 0xE3AB
 ori $5, $5, 0x1
 sw $3, 0($1)
 lbu $4, 1($1)
+nop
 srl $4, $4, 8
 sltu $2, $4, $5
 jr $0

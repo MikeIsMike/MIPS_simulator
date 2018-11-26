@@ -9,6 +9,7 @@ ori $13, $13, 0xBB
 nop
 sw $5, 4($4)
 lw $3, 4($4)
+nop
 andi $20, $3, 0xFF
 subu $20, $20, $10
 srl $21, $3, 8

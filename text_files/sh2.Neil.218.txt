@@ -4,6 +4,7 @@ lui $3, 0xEBEB
 ori $3, $3, 0x55DA
 sh $3, 0($1)
 lw $2, 0($1)
+nop
 srl $2, $2, 16
 jr $0
 nop 
