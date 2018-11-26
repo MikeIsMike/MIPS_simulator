@@ -15,7 +15,6 @@ int memory::set_instructions(string filename){
 
     file.open(filename, ios::binary | ios::in);
 	if (!file.is_open()) {
-		std::cerr << "Cannot open file" << std::endl;
 		exit(-21);
 	}
     file.seekg(0, file.end);
@@ -69,9 +68,15 @@ int memory::store_memory(int32_t address, int32_t rt, char method){
                 if(address == 0x30000007){
                     char c = rt & BYTE_MASK;
                     putchar(c);
+                    if(ferror(stdout)){
+                        exit(-21);
+                    }
                 }
                 else{
                     putchar(0);
+                    if(ferror(stdout)){
+                        exit(-21);
+                    }
                 }
             }
             else{
@@ -91,9 +96,15 @@ int memory::store_memory(int32_t address, int32_t rt, char method){
                 if(address == 0x30000006){
                     char c = rt & BYTE_MASK;
                     putchar(c);
+                    if(ferror(stdout)){
+                        exit(-21);
+                    }
                 }
                 else{
                     putchar(0);
+                    if(ferror(stdout)){
+                        exit(-21);
+                    }
                 }
             }
             else{
@@ -109,6 +120,9 @@ int memory::store_memory(int32_t address, int32_t rt, char method){
             else if(check == "putc"){
                 char c = rt & BYTE_MASK;
                 putchar(c);
+                if(ferror(stdout)){
+                    exit(-21);
+                }
             }
             else{
                 return_code = -11;
@@ -160,11 +174,17 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                 if(address == 0x30000003){
                     if(sign){
                         byte = getchar();
+                        if(ferror(stdin)){
+                            exit(-21);
+                        }
                         data = byte;
                         REG[rt] = data;
                     }
                     else{
                         u_byte = getchar();
+                        if(ferror(stdin)){
+                            exit(-21);
+                        }
                         data = u_byte;
                         REG[rt] = data;
                     }
@@ -172,6 +192,9 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                 else{
                     if(sign){
                         byte = getchar();
+                        if(ferror(stdin)){
+                            exit(-21);
+                        }
                         if(byte == -1){
                             data = byte;
                             REG[rt] = data;
@@ -182,6 +205,9 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                     }
                     else{
                         u_byte = getchar();
+                        if(ferror(stdin)){
+                            exit(-21);
+                        }
                         if(u_byte == 0xFF){
                             data = u_byte;
                             REG[rt] = data;
@@ -228,6 +254,9 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
             else if(check == "getc"){
                 if(address == 0x30000002){
                     u_byte = getchar();
+                    if(ferror(stdin)){
+                        exit(-21);
+                    }
                     data = u_byte;
                     if(u_byte == 0xFF){
                         if(sign){
@@ -244,6 +273,9 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                 else{
                     if(sign){
                         halfword = getchar();
+                        if(ferror(stdin)){
+                            exit(-21);
+                        }
                         if(halfword == -1){
                             data = halfword;
                             REG[rt] = data;
@@ -254,6 +286,9 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                     }
                     else{
                         u_halfword = getchar();
+                        if(ferror(stdin)){
+                            exit(-21);
+                        }
                         if(u_halfword == 0xFFFF){
                             data = u_halfword;
                             REG[rt] = data;
@@ -280,6 +315,9 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
             }
             else if(check == "getc"){
                 u_byte = getchar();
+                if(ferror(stdin)){
+                    exit(-21);
+                }
                 if(u_byte == 0xFF){
                     REG[rt] = 0xFFFFFFFF;
                 }
@@ -322,6 +360,9 @@ int memory::load_unaligned_memory(int32_t address, uint32_t rt, char method){
             else if(check == "getc"){
                 if(address == 0x30000000){
                     u_byte = getchar();
+                    if(ferror(stdin)){
+                        exit(-21);
+                    }
                     REG[rt] = u_byte;
                 }
                 else{
@@ -353,6 +394,9 @@ int memory::load_unaligned_memory(int32_t address, uint32_t rt, char method){
             else if(check == "getc"){
                 if(address == 0x30000003){
                     u_byte = getchar();
+                    if(ferror(stdin)){
+                        exit(-21);
+                    }
                     REG[rt] = u_byte;
                 }
                 else{

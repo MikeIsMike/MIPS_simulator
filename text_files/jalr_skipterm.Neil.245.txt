@@ -1,0 +1,6 @@
+lui $3, 0x1000
+ori $3, $3, 0x0018
+ori $2, $2, 0xFF
+jalr $3
+nop
+jr $0

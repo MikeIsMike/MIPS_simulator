@@ -63,6 +63,8 @@ int sort_I(const uint32_t instruction, const char type){
         case 43 :
             return_code = store_instruction(instruction, type);
             break;
+        default :
+            exit(-12);
     }
     return return_code;
 }
@@ -119,6 +121,8 @@ int sort_R(const uint32_t instruction, const char type){
         case 43 :
             return_code = set_instruction(instruction, type);
             break;
+        default :
+            exit(-12);
     }
 
     return return_code;
@@ -866,7 +870,7 @@ int execute_instruction(uint32_t instruction, bool branch_delay){
     return return_code;
 }
 
-///////////////////////////////////Branch delay//////////////////////////////////////////
+///////////////////////////////////Branch_delay//////////////////////////////////////////
 void execute_branch_delay(int32_t& PROG_COUNTER, int32_t& offset, uint32_t& branch_delay, int& return_code) {
 	PROG_COUNTER = PROG_COUNTER + 4;
 	if (MEMORY.check_word(PROG_COUNTER + offset) == "inst") {

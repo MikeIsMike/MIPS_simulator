@@ -1,0 +1,4 @@
+ori $2, $2, 0xFF
+jal 0x10
+nop
+jr $0
