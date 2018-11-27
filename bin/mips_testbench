@@ -2,8 +2,8 @@
 args=("$@")
 #echo args[0] is ${args[0]} #${args[1]} ${args[2]}
 NUMBER=0
-TESTS="./test/*.bin"
-TEXTFILE="./test/input.txt"
+TESTS="./testbinaries/*.bin"
+TEXTFILE="./testbinaries/input.txt"
 
 for T in $TESTS
 do
@@ -14,7 +14,9 @@ do
     author="${filename#*.}" #get what is after the first "."
     author="${author%%.*}" #get author which is between first and second "."
     result="${filename##*.}" #get expected result which is between last and second last dots
+    
 #echo $result
+
 if [[ $testname == *"getc"* ]];
 then
     cat $TEXTFILE | ${args[0]} $T

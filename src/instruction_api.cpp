@@ -2,7 +2,7 @@
 #include <sstream>
 
 #include "instruction_api.hpp"
-using namespace std;
+//using namespace std;
 
 const int FUNCT_MASK     = 0b111111;
 const int REG_MASK       = 0b11111;
@@ -193,7 +193,7 @@ int jump_instruction(const uint32_t instruction, const char type){
     uint32_t instr_index;
     uint32_t rs, branch_delay, rd;
     int32_t address, temp;
-    string check;
+    std::string check;
     switch(type){
         case 'J' :
             switch(instruction >> 26){

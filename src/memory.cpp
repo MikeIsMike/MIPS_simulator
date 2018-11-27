@@ -3,17 +3,17 @@
 
 #include "instruction_api.hpp"
 
-using namespace std;
+//using namespace std;
 
 //////////////////////////////set_instructions////////////////////////////////////////////
-int memory::set_instructions(string filename){
-    ifstream file;
+int memory::set_instructions(std::string filename){
+    std::ifstream file;
     int count = 1, index = 0, i = 0;
     int length;
     unsigned int bit;
     uint8_t b;
 
-    file.open(filename, ios::binary | ios::in);
+    file.open(filename, std::ios::binary | std::ios::in);
 	if (!file.is_open()) {
 		exit(-21);
 	}
@@ -53,7 +53,7 @@ uint32_t memory::get_instruction(int32_t address){
 //////////////////////////////store_memory////////////////////////////////////////////////
 int memory::store_memory(int32_t address, int32_t rt, char method){
     int return_code = 0, index, byte_offset, half_offset;
-    string check;
+    std::string check;
     switch(method){
         case 'B':
             check = MEMORY.check_byte(address);
@@ -135,7 +135,7 @@ int memory::store_memory(int32_t address, int32_t rt, char method){
 /////////////////////////////////load_memory//////////////////////////////////////////////
 int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
     int return_code = 0, index, byte_offset, half_offset;
-    string check;
+    std::string check;
     int8_t byte;
     uint8_t u_byte;
     int16_t halfword;
@@ -337,7 +337,7 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
 int memory::load_unaligned_memory(int32_t address, uint32_t rt, char method){
     int return_code = 0, offset, index;
     uint8_t u_byte;
-    string check;
+    std::string check;
     int32_t ms_bytes, ls_bytes, temp;
     uint32_t unsigned_shift;
     switch(method){
@@ -430,8 +430,8 @@ int memory::load_unaligned_memory(int32_t address, uint32_t rt, char method){
     return return_code;
 }
 ///////////////////////////////check_byte/////////////////////////////////////////////////
-string memory::check_byte(int32_t address){
-    string access;
+std::string memory::check_byte(int32_t address){
+    std::string access;
     if(address >= 0x20000000 && address < 0x24000000){
         access = "data";
     }
@@ -450,8 +450,8 @@ string memory::check_byte(int32_t address){
     return access;
 }
 ///////////////////////////////check_half/////////////////////////////////////////////////
-string memory::check_half(int32_t address){
-    string access;
+std::string memory::check_half(int32_t address){
+    std::string access;
     if((address & 0b1) == 0){
         if(address >= 0x20000000 && address < 0x24000000){
             access = "data";
@@ -475,8 +475,8 @@ string memory::check_half(int32_t address){
     return access;
 }
 ///////////////////////////////check_word/////////////////////////////////////////////////
-string memory::check_word(int32_t address){
-    string access;
+std::string memory::check_word(int32_t address){
+    std::string access;
     if((address & 0b11) == 0){
         if(address >= 0x20000000 && address < 0x24000000){
             access = "data";
