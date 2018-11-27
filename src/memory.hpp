@@ -1,7 +1,7 @@
 class memory{
     private:
-        uint32_t         INST[4194304];
-        int32_t          DATA_MEM[16777216];
+        uint32_t         INST[4194304] = { };
+        int32_t          DATA_MEM[16777216] = { };
         uint32_t         ADDR_NULL = 0;
     public:
         int set_instructions(std::string filename);

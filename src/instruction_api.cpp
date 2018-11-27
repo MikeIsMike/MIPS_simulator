@@ -13,7 +13,7 @@ const int OFFSET_MASK    = 0b1111111111111111;
 const int BYTE_MASK      = 0b11111111;
 const int HALFWORD_MASK  = 0b1111111111111111;
 
-int32_t          REG[32];
+int32_t          REG[32] = { };
 int32_t          PROG_COUNTER = 0x10000000;
 int32_t          HI;
 int32_t          LO;

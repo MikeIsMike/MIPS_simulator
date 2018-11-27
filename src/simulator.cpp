@@ -9,6 +9,9 @@ int main(int argc, char* argv[]){
     int return_code;
     int index;
     uint32_t instruction;
+    if(argc <= 1){
+        std::exit(-21);
+    }
     index = MEMORY.set_instructions(argv[1]);
 
     while(PROG_COUNTER != 0){
