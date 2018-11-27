@@ -1,6 +1,6 @@
 #!/bin/bash
 args=("$@")
-echo args[0] is ${args[0]} #${args[1]} ${args[2]}
+#echo args[0] is ${args[0]} #${args[1]} ${args[2]}
 NUMBER=0
 TESTS="./test/*.bin"
 TEXTFILE="./test/input.txt"
