@@ -55,7 +55,8 @@ memory.o: ./src/memory.cpp ./src/memory.hpp
 
 # Dummy for build testbench to conform to spec. Could do nothing
 testbench:
-	@echo "Nothing to do"
+	chmod u+x bin/mips_testbench
+	@echo "Nothing else to do"
 
 
 

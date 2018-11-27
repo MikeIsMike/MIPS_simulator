@@ -1,9 +1,0 @@
-addi $2, $0, 5
-bgezal $2, 4
-nop
-jr $zero
-addi $2, $2, 5
-addi $2, $2, 100
-addi $2, $2, 1
-jr $ra
-nop

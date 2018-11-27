@@ -1,0 +1,11 @@
+#load from getc
+lui $t0, 0x3000
+ori $t0, $t0, 0x0001
+lb $t1, 2($t0)
+
+#store into putc
+lui $t2, 0x3000
+ori $t2, $t2, 0x0005
+sb $t1, 2($t2)
+jr $0
+nop

@@ -1,0 +1,10 @@
+#depends on lui, ori to work
+#zero minus most negative number, 
+
+lui $t0, 0x0
+ori $t0, $t0, 0x0
+lui $t1, 0x7FFF
+ori $t1, $t1, 0xFFFF
+sub $2, $t0, $t1
+jr $0
+nop

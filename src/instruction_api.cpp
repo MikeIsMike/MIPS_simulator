@@ -504,7 +504,7 @@ int xor_instruction(const uint32_t instruction, const char type){
 
 ///////////////////////sub_instruction//////////////////////////////////////////////
 int sub_instruction(const uint32_t instruction, const char type){
-uint32_t rs, rt, rd;
+    uint32_t rs, rt, rd;
     int return_code = 0;
     switch(instruction & FUNCT_MASK){
         case 34:
@@ -591,12 +591,12 @@ int branch_instruction(const uint32_t instruction, const char type){
 
 		case 0b10001:
         //BGEZAL
+			REG[31] = PROG_COUNTER + 8;
 			if (REG[rs] >= 0) {
 				if (MEMORY.check_word(PROG_COUNTER + offset + 4)=="inst") {
 					PROG_COUNTER = PROG_COUNTER + 4;
 					branch_delay = MEMORY.get_instruction(PROG_COUNTER);
 					return_code = execute_instruction(branch_delay, true);
-					REG[31] = PROG_COUNTER + 4;
 					PROG_COUNTER = PROG_COUNTER + offset - 4; ///check whether -4 is correct
 
 				}
@@ -620,12 +620,12 @@ int branch_instruction(const uint32_t instruction, const char type){
 
 		case 0b10000:
         //BLTZAL
+			REG[31] = PROG_COUNTER + 8;
 			if (REG[rs]<0) {
 				if (MEMORY.check_word(PROG_COUNTER + offset + 4) == "inst") {
 					PROG_COUNTER = PROG_COUNTER + 4;
 					branch_delay = MEMORY.get_instruction(PROG_COUNTER);
 					return_code = execute_instruction(branch_delay, true);
-					REG[31] = PROG_COUNTER + 4;
 					PROG_COUNTER = PROG_COUNTER + offset - 4; ///check whether -4 is correct
 
 				}
@@ -633,7 +633,7 @@ int branch_instruction(const uint32_t instruction, const char type){
 					PROG_COUNTER = PROG_COUNTER + 4;
 					branch_delay = MEMORY.get_instruction(PROG_COUNTER);
 					return_code = execute_instruction(branch_delay, true);
-					if (return_code != 0) {
+					if (return_code == 0) {
 						return_code = -11;
 					}
 				}
@@ -826,16 +826,16 @@ bool check_overflow(int32_t add1, int32_t add2){
 
 bool check_overflow_sub(int32_t sub1, int32_t sub2){//this is checking signed overflow, is that a problem? Do we need to check unsigned overflow instead?
     bool overflow;
-    if(sub1>0 && sub2<0){
-        if((sub1 - sub2) <= 0){
+    if(sub1>=0 && sub2<0){ //need to have "=0" because the most positive number's magnitude is smaller than the most negative number's magnitude
+        if((sub1 - sub2) < 0){
             overflow = true;
         }
         else{
             overflow = false;
         }
     }
-    else if(sub1<0 && sub2>0){
-        if((sub1-sub2) >=0){
+    else if(sub1<0 && sub2>0){ //don't need "=0" because the most negative number's magnitude is bigger than the most positive number's magnitude
+        if((sub1-sub2) >0){
             overflow = true;
         }
         else{

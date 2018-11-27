@@ -2,7 +2,7 @@
 #it should branch once
 
 addi $t1, $t1, 1
-bgezal $0, 6
+bgezal $t1, 6
 addi $t0, $t0, 2
 addi $t0, $t0, 2
 addi $t0, $t0, 2

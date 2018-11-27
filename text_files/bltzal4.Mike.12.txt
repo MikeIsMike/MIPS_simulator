@@ -1,0 +1,25 @@
+#depends on addi to work
+#negative value in register, shouldn't branch, should link
+
+addi $t1, $t1, 0x1
+bltzal $t1 error
+addi $t2, $0, 6
+addi $t0, $t0, 2
+addi $t0, $t0, 2
+addi $t0, $t0, 2
+beq $t0, $t2 jumpback
+nop
+addi $2, $t0, 0
+
+jr $0
+nop
+
+error:
+addi $t0, $t0, 2
+addi $t0, $t0, 2
+jr $31
+nop
+
+jumpback:
+jr $31
+nop

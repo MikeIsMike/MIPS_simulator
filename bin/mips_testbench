@@ -3,6 +3,7 @@ args=("$@")
 echo args[0] is ${args[0]} #${args[1]} ${args[2]}
 NUMBER=0
 TESTS="./test/*.bin"
+TEXTFILE="./test/input.txt"
 
 for T in $TESTS
 do
@@ -16,11 +17,11 @@ do
 #echo $result
 if [[ $testname == *"getc"* ]];
 then
-    cat ./test/input.txt | ${args[0]} $T
+    cat $TEXTFILE | ${args[0]} $T
     EXITCODE=$?
     if [ $result -eq $EXITCODE ]; #space between square brackets are necessary
     then
-        echo "$NUMBER, $testname, pass, $author" #author is the between first and second dots
+        echo "$NUMBER, $testname, pass, $author" #author is between first and second dots
     else
         echo "$NUMBER, $testname, fail, $author (expected result $result, got $EXITCODE)"
     fi
@@ -32,9 +33,23 @@ then
     EXITCODE=$?
     if [ $result -ne $EXITCODE ]; #space between square brackets are necessary
     then
-        echo "$NUMBER, $testname, pass, $author" #author is the between first and second dots
+        echo "$NUMBER, $testname, pass, $author" #author is between first and second dots
     else
         echo "$NUMBER, $testname, fail, $author (result cannot be $result, got $EXITCODE)"
+    fi
+        NUMBER=$((NUMBER+1))
+
+elif [[ $testname == *"putc"* ]];
+then
+    OUTPUT=$(cat $TEXTFILE | ${args[0]} $T)
+    EXITCODE=$?
+
+    #if [ $OUTPUT -eq $(cat ./test/input.txt) ]; #space between square brackets are necessary
+    if [ $OUTPUT == $result ]
+    then
+        echo "$NUMBER, $testname, pass, $author, output is $OUTPUT" #author is between first and second dots
+    else
+        echo "$NUMBER, $testname, fail, $author, (expected $result, got $OUTPUT)"
     fi
         NUMBER=$((NUMBER+1))
 
@@ -43,7 +58,7 @@ else
     EXITCODE=$?
     if [ $result -eq $EXITCODE ]; #space between square brackets are necessary
     then
-        echo "$NUMBER, $testname, pass, $author" #author is the between first and second dots
+        echo "$NUMBER, $testname, pass, $author" #author is between first and second dots
     else
         echo "$NUMBER, $testname, fail, $author (expected result $result, got $EXITCODE)"
     fi
