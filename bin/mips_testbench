@@ -21,9 +21,9 @@ then
     EXITCODE=$?
     if [ $result -eq $EXITCODE ]; #space between square brackets are necessary
     then
-        echo "$NUMBER, $testname, pass, $author" #author is between first and second dots
+        echo "$NUMBER, $testname, Pass, $author" #author is between first and second dots
     else
-        echo "$NUMBER, $testname, fail, $author (expected result $result, got $EXITCODE)"
+        echo "$NUMBER, $testname, Fail, $author (expected result $result, got $EXITCODE)"
     fi
         NUMBER=$((NUMBER+1))
 
@@ -33,9 +33,9 @@ then
     EXITCODE=$?
     if [ $result -ne $EXITCODE ]; #space between square brackets are necessary
     then
-        echo "$NUMBER, $testname, pass, $author" #author is between first and second dots
+        echo "$NUMBER, $testname, Pass, $author" #author is between first and second dots
     else
-        echo "$NUMBER, $testname, fail, $author (result cannot be $result, got $EXITCODE)"
+        echo "$NUMBER, $testname, Fail, $author (result cannot be $result, got $EXITCODE)"
     fi
         NUMBER=$((NUMBER+1))
 
@@ -47,9 +47,9 @@ then
     #if [ $OUTPUT -eq $(cat ./test/input.txt) ]; #space between square brackets are necessary
     if [ $OUTPUT == $result ]
     then
-        echo "$NUMBER, $testname, pass, $author, output is $OUTPUT" #author is between first and second dots
+        echo "$NUMBER, $testname, Pass, $author, output is $OUTPUT" #author is between first and second dots
     else
-        echo "$NUMBER, $testname, fail, $author, (expected $result, got $OUTPUT)"
+        echo "$NUMBER, $testname, Fail, $author, (expected $result, got $OUTPUT)"
     fi
         NUMBER=$((NUMBER+1))
 
@@ -58,9 +58,9 @@ else
     EXITCODE=$?
     if [ $result -eq $EXITCODE ]; #space between square brackets are necessary
     then
-        echo "$NUMBER, $testname, pass, $author" #author is between first and second dots
+        echo "$NUMBER, $testname, Pass, $author" #author is between first and second dots
     else
-        echo "$NUMBER, $testname, fail, $author (expected result $result, got $EXITCODE)"
+        echo "$NUMBER, $testname, Fail, $author (expected result $result, got $EXITCODE)"
     fi
         NUMBER=$((NUMBER+1))
 
