@@ -338,7 +338,7 @@ int memory::load_unaligned_memory(int32_t address, uint32_t rt, char method){
     int return_code = 0, offset, index;
     uint8_t u_byte;
     string check;
-    int32_t ms_bytes, ls_bytes;
+    int32_t ms_bytes, ls_bytes, temp;
     uint32_t unsigned_shift;
     switch(method){
         case 'L':
@@ -366,7 +366,16 @@ int memory::load_unaligned_memory(int32_t address, uint32_t rt, char method){
                     REG[rt] = u_byte;
                 }
                 else{
-                    return_code = -11;
+                    u_byte = getchar();
+                    if(ferror(stdin)){
+                        exit(-21);
+                    }
+                    temp = u_byte;
+                    index = (address - 0x30000000)/4;
+                    offset = (address - 0x30000000)%4;
+                    ms_bytes = temp << 8*offset;
+                    REG[rt] = REG[rt] & ~(0xFFFFFFFF << 8*offset);
+                    REG[rt] = REG[rt] | ms_bytes;
                 }
             }
             else{
@@ -400,7 +409,17 @@ int memory::load_unaligned_memory(int32_t address, uint32_t rt, char method){
                     REG[rt] = u_byte;
                 }
                 else{
-                    return_code = -11;
+                    u_byte = getchar();
+                    if(ferror(stdin)){
+                        exit(-21);
+                    }
+                    temp = u_byte;
+                    index = (address - 0x30000000)/4;
+                    offset = (address - 0x30000000)%4;
+                    unsigned_shift = temp;
+                    ls_bytes = unsigned_shift >> (24-8*offset);
+                    REG[rt] = REG[rt] & ~(0xFFFFFFFF >> (24 - 8*offset));
+                    REG[rt] = REG[rt] | ls_bytes;
                 }
             }
             else{

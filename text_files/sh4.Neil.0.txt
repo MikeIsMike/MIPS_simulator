@@ -5,6 +5,7 @@ ori $10, $10, 0x57DD
 ori $25, $25, 0x57DD
 sh $10, 0($9)
 lw $1, 0($9)
+nop
 srl $1, $1, 16
 andi $1, $1, 0xFFFF
 subu $2, $1, $25

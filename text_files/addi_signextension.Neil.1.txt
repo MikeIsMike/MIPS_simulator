@@ -1,5 +1,4 @@
-lui $5 0x4000
 addi $4, $4, 0xFFFF
-sltu $2, $5, $4
+slt $2, $4, $0
 jr $0
 nop

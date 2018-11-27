@@ -192,7 +192,7 @@ int jump_instruction(const uint32_t instruction, const char type){
     int return_code = 0;
     uint32_t instr_index;
     uint32_t rs, branch_delay, rd;
-    int32_t address;
+    int32_t address, temp;
     string check;
     switch(type){
         case 'J' :
@@ -255,15 +255,16 @@ int jump_instruction(const uint32_t instruction, const char type){
                     rs = (instruction >> 21) & REG_MASK;
                     PROG_COUNTER = PROG_COUNTER + 4;
                     check = MEMORY.check_word(REG[rs]);
+                    temp = REG[rs];
                     if(check == "inst"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
-                        PROG_COUNTER = REG[rs] - 4;
+                        PROG_COUNTER = temp - 4;
                     }
                     else if(check == "null"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
-                        PROG_COUNTER = REG[rs] - 4;
+                        PROG_COUNTER = temp - 4;
                     }
                     else{
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
@@ -279,16 +280,17 @@ int jump_instruction(const uint32_t instruction, const char type){
                     rd = (instruction >> 11) & REG_MASK;
                     REG[rd] = PROG_COUNTER + 8;
                     PROG_COUNTER = PROG_COUNTER + 4;
+                    temp = REG[rs];
                     check = MEMORY.check_word(REG[rs]);
                     if(check == "inst"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
-                        PROG_COUNTER = REG[rs] - 4;
+                        PROG_COUNTER = temp - 4;
                     }
                     else if(check == "null"){
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);
                         return_code = execute_instruction(branch_delay, true);
-                        PROG_COUNTER = REG[rs] - 4;
+                        PROG_COUNTER = temp - 4;
                     }
                     else{
                         branch_delay = MEMORY.get_instruction(PROG_COUNTER);

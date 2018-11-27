@@ -4,6 +4,7 @@ lui $4, 0x3A59
 ori $4, $4, 0xCE90
 sw $4, 0($3)
 lh $10, 0($3)
+nop
 slt $2, $0, $10
 jr $0
 nop 

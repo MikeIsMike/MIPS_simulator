@@ -7,6 +7,7 @@ ori $6, $6, 0xA1
 ori $7, $7, 0xFF
 sw $4, 0($3)
 lh $10, 2($3)
+nop
 andi $11, $10, 0xFF
 subu $11, $11, $6
 srl $12, $10, 8
