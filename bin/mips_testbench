@@ -21,7 +21,7 @@ do
 
 if [[ $testname == *"getc"* ]];
 then
-    cat $TEXTFILE | timeout 15 ${args[0]} $T
+    cat $TEXTFILE | timeout 200 ${args[0]} $T
     EXITCODE=$?
     if [ $result -eq $EXITCODE ]; #space between square brackets are necessary
     then
@@ -36,7 +36,7 @@ then
 
 elif [[ $testname == *"divideByZero"* ]];
 then
-    timeout 15 ${args[0]} $T
+    timeout 200 ${args[0]} $T
     EXITCODE=$?
     if [ $result -ne $EXITCODE ]; #space between square brackets are necessary
     then
@@ -51,7 +51,7 @@ then
 
 elif [[ $testname == *"putc"* ]];
 then
-    OUTPUT=$(cat $TEXTFILE | timeout 15 ${args[0]} $T)
+    OUTPUT=$(cat $TEXTFILE | timeout 200 ${args[0]} $T)
     EXITCODE=$?
 
     #if [ $OUTPUT -eq $(cat ./test/input.txt) ]; #space between square brackets are necessary
@@ -67,7 +67,7 @@ then
         NUMBER=$((NUMBER+1))
 
 else
-    timeout 15 ${args[0]} $T
+    timeout 200 ${args[0]} $T
     EXITCODE=$?
     if [ $result -eq $EXITCODE ]; #space between square brackets are necessary
     then
