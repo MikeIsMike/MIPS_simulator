@@ -40,7 +40,7 @@ int main(int argc, char* argv[]){
         uint8_t exit_code = REG[2] & BYTE_MASK;
         exit(exit_code);
     }
-    catch(std::exception& e){
+    catch(...){
         std::exit(-20);
     }
 
