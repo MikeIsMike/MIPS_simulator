@@ -15,8 +15,8 @@ const int HALFWORD_MASK  = 0b1111111111111111;
 
 int32_t          REG[32] = { };
 int32_t          PROG_COUNTER = 0x10000000;
-int32_t          HI;
-int32_t          LO;
+int32_t          HI=0;
+int32_t          LO=0;
 memory           MEMORY;
 
 
