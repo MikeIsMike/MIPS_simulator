@@ -7,3 +7,6 @@ prog
 binary_creator/
 
 
+test.neil.100.bin
+linker.ld
+test.c
