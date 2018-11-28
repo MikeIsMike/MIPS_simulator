@@ -10,7 +10,7 @@ int main(int argc, char* argv[]){
     int index;
     uint32_t instruction;
     if(argc <= 1){
-        std::exit(-21);
+        exit(-21);
     }
     index = MEMORY.set_instructions(argv[1]);
 

@@ -15,7 +15,7 @@ int memory::set_instructions(std::string filename){
 
     file.open(filename, std::ios::binary | std::ios::in);
 	if (!file.is_open()) {
-		exit(-21);
+		std::exit(-21);
 	}
     file.seekg(0, file.end);
     length = file.tellg();
@@ -46,7 +46,7 @@ uint32_t memory::get_instruction(int32_t address){
 		return instruction;
 	}
 	else {
-		exit(-11);
+		std::exit(-11);
 	}
 }
 
@@ -69,13 +69,13 @@ int memory::store_memory(int32_t address, int32_t rt, char method){
                     char c = rt & BYTE_MASK;
                     putchar(c);
                     if(ferror(stdout)){
-                        exit(-21);
+                        std::exit(-21);
                     }
                 }
                 else{
                     putchar(0);
                     if(ferror(stdout)){
-                        exit(-21);
+                        std::exit(-21);
                     }
                 }
             }
@@ -97,13 +97,13 @@ int memory::store_memory(int32_t address, int32_t rt, char method){
                     char c = rt & BYTE_MASK;
                     putchar(c);
                     if(ferror(stdout)){
-                        exit(-21);
+                        std::exit(-21);
                     }
                 }
                 else{
                     putchar(0);
                     if(ferror(stdout)){
-                        exit(-21);
+                        std::exit(-21);
                     }
                 }
             }
@@ -121,7 +121,7 @@ int memory::store_memory(int32_t address, int32_t rt, char method){
                 char c = rt & BYTE_MASK;
                 putchar(c);
                 if(ferror(stdout)){
-                    exit(-21);
+                    std::exit(-21);
                 }
             }
             else{
@@ -175,7 +175,7 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                     if(sign){
                         byte = getchar();
                         if(ferror(stdin)){
-                            exit(-21);
+                            std::exit(-21);
                         }
                         data = byte;
                         REG[rt] = data;
@@ -183,7 +183,7 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                     else{
                         u_byte = getchar();
                         if(ferror(stdin)){
-                            exit(-21);
+                            std::exit(-21);
                         }
                         data = u_byte;
                         REG[rt] = data;
@@ -193,7 +193,7 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                     if(sign){
                         byte = getchar();
                         if(ferror(stdin)){
-                            exit(-21);
+                            std::exit(-21);
                         }
                         if(byte == -1){
                             data = byte;
@@ -206,7 +206,7 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                     else{
                         u_byte = getchar();
                         if(ferror(stdin)){
-                            exit(-21);
+                            std::exit(-21);
                         }
                         if(u_byte == 0xFF){
                             data = u_byte;
@@ -255,7 +255,7 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                 if(address == 0x30000002){
                     u_byte = getchar();
                     if(ferror(stdin)){
-                        exit(-21);
+                        std::exit(-21);
                     }
                     data = u_byte;
                     if(u_byte == 0xFF){
@@ -274,7 +274,7 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                     if(sign){
                         halfword = getchar();
                         if(ferror(stdin)){
-                            exit(-21);
+                            std::exit(-21);
                         }
                         if(halfword == -1){
                             data = halfword;
@@ -287,7 +287,7 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
                     else{
                         u_halfword = getchar();
                         if(ferror(stdin)){
-                            exit(-21);
+                            std::exit(-21);
                         }
                         if(u_halfword == 0xFFFF){
                             data = u_halfword;
@@ -316,7 +316,7 @@ int memory::load_memory(int32_t address, uint32_t rt, char method, bool sign){
             else if(check == "getc"){
                 u_byte = getchar();
                 if(ferror(stdin)){
-                    exit(-21);
+                    std::exit(-21);
                 }
                 if(u_byte == 0xFF){
                     REG[rt] = 0xFFFFFFFF;
@@ -361,14 +361,14 @@ int memory::load_unaligned_memory(int32_t address, uint32_t rt, char method){
                 if(address == 0x30000000){
                     u_byte = getchar();
                     if(ferror(stdin)){
-                        exit(-21);
+                        std::exit(-21);
                     }
                     REG[rt] = u_byte;
                 }
                 else{
                     u_byte = getchar();
                     if(ferror(stdin)){
-                        exit(-21);
+                        std::exit(-21);
                     }
                     temp = u_byte;
                     index = (address - 0x30000000)/4;
@@ -404,14 +404,14 @@ int memory::load_unaligned_memory(int32_t address, uint32_t rt, char method){
                 if(address == 0x30000003){
                     u_byte = getchar();
                     if(ferror(stdin)){
-                        exit(-21);
+                        std::exit(-21);
                     }
                     REG[rt] = u_byte;
                 }
                 else{
                     u_byte = getchar();
                     if(ferror(stdin)){
-                        exit(-21);
+                        std::exit(-21);
                     }
                     temp = u_byte;
                     index = (address - 0x30000000)/4;

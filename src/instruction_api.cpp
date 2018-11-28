@@ -64,7 +64,7 @@ int sort_I(const uint32_t instruction, const char type){
             return_code = store_instruction(instruction, type);
             break;
         default :
-            exit(-12);
+            std::exit(-12);
     }
     return return_code;
 }
@@ -122,7 +122,7 @@ int sort_R(const uint32_t instruction, const char type){
             return_code = set_instruction(instruction, type);
             break;
         default :
-            exit(-12);
+            std::exit(-12);
     }
 
     return return_code;
