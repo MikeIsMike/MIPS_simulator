@@ -4,6 +4,8 @@ args=("$@")
 NUMBER=0
 TESTS="./testbinaries/*.bin"
 TEXTFILE="./testbinaries/input.txt"
+#OUTPUT=""
+chmod u+x ${args[0]}
 
 for T in $TESTS
 do
@@ -14,55 +16,67 @@ do
     author="${filename#*.}" #get what is after the first "."
     author="${author%%.*}" #get author which is between first and second "."
     result="${filename##*.}" #get expected result which is between last and second last dots
-    
+
 #echo $result
 
 if [[ $testname == *"getc"* ]];
 then
-    cat $TEXTFILE | ${args[0]} $T
+    cat $TEXTFILE | timeout 15 ${args[0]} $T
     EXITCODE=$?
     if [ $result -eq $EXITCODE ]; #space between square brackets are necessary
     then
         echo "$NUMBER, $testname, Pass, $author" #author is between first and second dots
+    elif [ $EXITCODE -eq 124 ];
+    then
+        echo "$NUMBER, $testname, Fail, $author, timeout"
     else
-        echo "$NUMBER, $testname, Fail, $author (expected result $result, got $EXITCODE)"
+        echo "$NUMBER, $testname, Fail, $author (expected result $result and got $EXITCODE)"
     fi
         NUMBER=$((NUMBER+1))
 
 elif [[ $testname == *"divideByZero"* ]];
 then
-    ${args[0]} $T
+    timeout 15 ${args[0]} $T
     EXITCODE=$?
     if [ $result -ne $EXITCODE ]; #space between square brackets are necessary
     then
         echo "$NUMBER, $testname, Pass, $author" #author is between first and second dots
+    elif [ $EXITCODE -eq 124 ];
+    then
+        echo "$NUMBER, $testname, Fail, $author, timeout"
     else
-        echo "$NUMBER, $testname, Fail, $author (result cannot be $result, got $EXITCODE)"
+        echo "$NUMBER, $testname, Fail, $author (result cannot be $result and got $EXITCODE)"
     fi
         NUMBER=$((NUMBER+1))
 
 elif [[ $testname == *"putc"* ]];
 then
-    OUTPUT=$(cat $TEXTFILE | ${args[0]} $T)
+    OUTPUT=$(cat $TEXTFILE | timeout 15 ${args[0]} $T)
     EXITCODE=$?
 
     #if [ $OUTPUT -eq $(cat ./test/input.txt) ]; #space between square brackets are necessary
-    if [ $OUTPUT == $result ]
+    if [[ "$OUTPUT" == "$result" ]];
     then
         echo "$NUMBER, $testname, Pass, $author, output is $OUTPUT" #author is between first and second dots
+    elif [ $EXITCODE -eq 124 ];
+    then
+        echo "$NUMBER, $testname, Fail, $author, timeout"
     else
-        echo "$NUMBER, $testname, Fail, $author, (expected $result, got $OUTPUT)"
+        echo "$NUMBER, $testname, Fail, $author, (expected $result and got $OUTPUT)"
     fi
         NUMBER=$((NUMBER+1))
 
 else
-    ${args[0]} $T
+    timeout 15 ${args[0]} $T
     EXITCODE=$?
     if [ $result -eq $EXITCODE ]; #space between square brackets are necessary
     then
         echo "$NUMBER, $testname, Pass, $author" #author is between first and second dots
+    elif [ $EXITCODE -eq 124 ];
+    then
+        echo "$NUMBER, $testname, Fail, $author, timeout"
     else
-        echo "$NUMBER, $testname, Fail, $author (expected result $result, got $EXITCODE)"
+        echo "$NUMBER, $testname, Fail, $author (expected result $result and got $EXITCODE)"
     fi
         NUMBER=$((NUMBER+1))
 
