@@ -1,0 +1,36 @@
+make[1]: Entering directory '/media/sf_shared/cw/summative/working/MIPSDontLie'
+g++ -W -Wall -std=c++11 -c ./src/simulator.cpp -o ./src/simulator.o
+./src/simulator.cpp: In function ‘int main(int, char**)’:
+./src/simulator.cpp:11:13: warning: variable ‘index’ set but not used [-Wunused-but-set-variable]
+         int index;
+             ^
+g++ -W -Wall -std=c++11 -c ./src/instruction_api.cpp -o ./src/instruction_api.o
+./src/instruction_api.cpp:330:60: warning: unused parameter ‘type’ [-Wunused-parameter]
+ int div_instruction(const uint32_t instruction, const char type){
+                                                            ^
+./src/instruction_api.cpp:357:60: warning: unused parameter ‘type’ [-Wunused-parameter]
+ int mul_instruction(const uint32_t instruction, const char type){
+                                                            ^
+./src/instruction_api.cpp:411:62: warning: unused parameter ‘type’ [-Wunused-parameter]
+ int store_instruction(const uint32_t instruction, const char type){
+                                                              ^
+./src/instruction_api.cpp:433:62: warning: unused parameter ‘type’ [-Wunused-parameter]
+ int shift_instruction(const uint32_t instruction, const char type){
+                                                              ^
+./src/instruction_api.cpp:508:60: warning: unused parameter ‘type’ [-Wunused-parameter]
+ int sub_instruction(const uint32_t instruction, const char type){
+                                                            ^
+./src/instruction_api.cpp:536:60: warning: unused parameter ‘type’ [-Wunused-parameter]
+ int mov_instruction(const uint32_t instruction, const char type){
+                                                            ^
+./src/instruction_api.cpp:562:63: warning: unused parameter ‘type’ [-Wunused-parameter]
+ int branch_instruction(const uint32_t instruction, const char type){
+                                                               ^
+./src/instruction_api.cpp:686:61: warning: unused parameter ‘type’ [-Wunused-parameter]
+ int load_instruction(const uint32_t instruction, const char type){
+                                                             ^
+g++ -W -Wall -std=c++11 -c ./src/memory.cpp -o ./src/memory.o
+mkdir -p bin
+rm -f ./bin/mips_simulator
+g++ -W -Wall ./src/simulator.o ./src/instruction_api.o ./src/memory.o -o ./bin/mips_simulator
+make[1]: Leaving directory '/media/sf_shared/cw/summative/working/MIPSDontLie'
