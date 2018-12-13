@@ -6,14 +6,14 @@ Exception :   overflow: s=1207959642, t=1207959717
 Exception :   overflow: s=536936447, t=1744830629
 Exception : Attempt to access range [INSTR_ADDR+INSTR_LEN,DATA_ADDR).
 Exception : Attempt to access range [INSTR_ADDR+INSTR_LEN,DATA_ADDR).
-Exception : Attempt to access range [DATA_ADDR+DATA_LEN,GETC_ADDR).
+Exception : Attempt to execute data memory
 Exception : Attempt to access range [INSTR_ADDR+INSTR_LEN,DATA_ADDR).
 Exception : Attempt to access range [INSTR_ADDR+INSTR_LEN,DATA_ADDR).
 Exception : Attempt to execute instruction at mis-aligned address 0x10000002.
 Exception : Attempt to access range [INSTR_ADDR+INSTR_LEN,DATA_ADDR).
 Exception : Attempt to access range [INSTR_ADDR+INSTR_LEN,DATA_ADDR).
 Exception : Attempt to access range [INSTR_ADDR+INSTR_LEN,DATA_ADDR).
-Exception : Attempt to access range [DATA_ADDR+DATA_LEN,GETC_ADDR).
+Exception : Attempt to execute data memory
 Exception : Attempt to access range [INSTR_ADDR+INSTR_LEN,DATA_ADDR).
 Exception : Attempt to access range [INSTR_ADDR+INSTR_LEN,DATA_ADDR).
 Exception : Attempt to execute instruction at mis-aligned address 0x10000002.
@@ -22,19 +22,19 @@ Exception : Attempt to access range [0,INSTR_ADDR).
 sub-word access to GETC.
 sub-word access to GETC.
 sub-word access to GETC.
-sub-word access to PUTC.
+Exception : Attempt to read from GETC
 Exception : Attempt to access range [DATA_ADDR+DATA_LEN,GETC_ADDR).
 Exception : Attempt to access range [0,INSTR_ADDR).
 sub-word access to GETC.
 sub-word access to GETC.
 sub-word access to GETC.
-sub-word access to PUTC.
+Exception : Attempt to read from GETC
 Exception : Attempt to access range [DATA_ADDR+DATA_LEN,GETC_ADDR).
 Exception : Attempt to access range [0,INSTR_ADDR).
 sub-word access to GETC.
 sub-word access to GETC.
 sub-word access to GETC.
-sub-word access to PUTC.
+Exception : Attempt to read from GETC
 Exception : Address is not aligned.
 Exception : Attempt to access range [0,INSTR_ADDR).
 sub-word access to GETC.
@@ -42,29 +42,32 @@ sub-word access to GETC.
 sub-word access to GETC.
 Exception : Address is not aligned.
 Exception : Address is not aligned.
-sub-word access to PUTC.
+Exception : Attempt to read from GETC
 Exception : Address is not aligned.
 Exception : Address is not aligned.
 Exception : Address is not aligned.
 Exception : Attempt to access range [0,INSTR_ADDR).
 Exception : Attempt to access range [0,INSTR_ADDR).
+Exception : Attempt to read from GETC
 Exception : Attempt to access range [0,INSTR_ADDR).
+Exception : Attempt to read from GETC
 Exception : Attempt to access range [0,INSTR_ADDR).
 Exception : Attempt to access range [DATA_ADDR+DATA_LEN,GETC_ADDR).
+Exception : Attempt to read from GETC
 Exception : Attempt to access range [0,INSTR_ADDR).
 Exception : Address is not aligned.
 Exception : Address is not aligned.
 Exception : Attempt to access range [0,INSTR_ADDR).
 sub-word access to PUTC.
 Exception : Attempt to access range [0,INSTR_ADDR).
-sub-word access to GETC.
+Exception : Attempt to write to GETC
 Exception : Attempt to write to instruction memory.
 Exception : Attempt to write to instruction memory.
 sub-word access to PUTC.
 Exception : Attempt to access range [0,INSTR_ADDR).
 sub-word access to PUTC.
 Exception : Attempt to access range [0,INSTR_ADDR).
-sub-word access to GETC.
+Exception : Attempt to write to GETC
 Exception : Attempt to write to instruction memory.
 Exception : Attempt to write to instruction memory.
 sub-word access to PUTC.
@@ -77,6 +80,7 @@ Exception :     overflow, s=0, t=-2147483648
 Exception :     overflow, s=2147483647, t=-1
 Exception :     overflow, s=-2147483648, t=1
 Exception : Attempt to access range [0,INSTR_ADDR).
+Exception : Attempt to write to GETC
 Exception : Attempt to write to instruction memory.
 Exception : Attempt to write to instruction memory.
 Exception : Address is not aligned.

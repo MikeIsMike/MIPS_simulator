@@ -91,7 +91,7 @@ Disable instruction ' jalr6' for test '81'
 Disable instruction ' jalr7' for test '82'
 Disable instruction ' jalr8' for test '83'
 Disable instruction ' jalr_datamem' for test '84'
-Exception : Attempt to access range [DATA_ADDR+DATA_LEN,GETC_ADDR).
+Exception : Attempt to execute data memory
 Disable instruction ' jalr_resmem' for test '85'
 Exception : Attempt to access range [INSTR_ADDR+INSTR_LEN,DATA_ADDR).
 Disable instruction ' jalr_skipterm' for test '86'
@@ -109,7 +109,7 @@ Disable instruction ' jr2' for test '92'
 Disable instruction ' jr3' for test '93'
 Disable instruction ' jr4' for test '94'
 Disable instruction ' jr_datamem' for test '95'
-Exception : Attempt to access range [DATA_ADDR+DATA_LEN,GETC_ADDR).
+Exception : Attempt to execute data memory
 Disable instruction ' jr_resmem' for test '96'
 Exception : Attempt to access range [INSTR_ADDR+INSTR_LEN,DATA_ADDR).
 Disable instruction ' jr_skipterm' for test '97'
@@ -131,8 +131,8 @@ Disable instruction ' lb_getc' for test '106'
 sub-word access to GETC.
 Disable instruction ' lb_instr' for test '107'
 Disable instruction ' lb_instrnop' for test '108'
-Disable instruction '' for test ''
-sub-word access to PUTC.
+Disable instruction ' lb_put' for test '109'
+Exception : Attempt to read from GETC
 Disable instruction ' lb_resmem' for test '110'
 Exception : Attempt to access range [DATA_ADDR+DATA_LEN,GETC_ADDR).
 Disable instruction ' lb_signextension1' for test '111'
@@ -153,8 +153,8 @@ Disable instruction ' lbu_getc' for test '122'
 sub-word access to GETC.
 Disable instruction ' lbu_instr' for test '123'
 Disable instruction ' lbu_instrnop' for test '124'
-Disable instruction '' for test ''
-sub-word access to PUTC.
+Disable instruction ' lbu_put' for test '125'
+Exception : Attempt to read from GETC
 Disable instruction ' lbu_resmem' for test '126'
 Exception : Attempt to access range [DATA_ADDR+DATA_LEN,GETC_ADDR).
 Disable instruction ' lbu_zeroextension1' for test '127'
@@ -172,8 +172,8 @@ Disable instruction ' lh_getc' for test '135'
 sub-word access to GETC.
 Disable instruction ' lh_instr' for test '136'
 Disable instruction ' lh_instrnop' for test '137'
-Disable instruction '' for test ''
-sub-word access to PUTC.
+Disable instruction ' lh_put' for test '138'
+Exception : Attempt to read from GETC
 Disable instruction ' lh_resmem' for test '139'
 Exception : Address is not aligned.
 Disable instruction ' lh_signextension1' for test '140'
@@ -195,8 +195,8 @@ Disable instruction ' lh_unalignedgetc' for test '151'
 Exception : Address is not aligned.
 Disable instruction ' lh_unaligned' for test '152'
 Exception : Address is not aligned.
-Disable instruction '' for test ''
-sub-word access to PUTC.
+Disable instruction ' lhu_put' for test '153'
+Exception : Attempt to read from GETC
 Disable instruction ' lhu_resmem' for test '154'
 Exception : Address is not aligned.
 Disable instruction ' lhu_unalignedgetc' for test '155'
@@ -229,12 +229,14 @@ Disable instruction ' lwl_addrnull' for test '178'
 Exception : Attempt to access range [0,INSTR_ADDR).
 Disable instruction ' lwl_instr' for test '179'
 Disable instruction ' lwl_instrnop' for test '180'
-Disable instruction '' for test ''
+Disable instruction ' lwl_put' for test '181'
+Exception : Attempt to read from GETC
 Disable instruction ' lwl_resmem' for test '182'
 Exception : Attempt to access range [0,INSTR_ADDR).
 Disable instruction ' lwl_unalignedgetc' for test '183'
 Disable instruction ' lw_noinstr' for test '184'
-Disable instruction '' for test ''
+Disable instruction ' lw_put' for test '185'
+Exception : Attempt to read from GETC
 Disable instruction ' lwr1' for test '186'
 Disable instruction ' lwr2' for test '187'
 Disable instruction ' lwr3' for test '188'
@@ -249,7 +251,8 @@ Disable instruction ' lw_resmem' for test '195'
 Exception : Attempt to access range [DATA_ADDR+DATA_LEN,GETC_ADDR).
 Disable instruction ' lwr_instr' for test '196'
 Disable instruction ' lwr_instrnop' for test '197'
-Disable instruction '' for test ''
+Disable instruction ' lwr_put' for test '198'
+Exception : Attempt to read from GETC
 Disable instruction ' lwr_resmem' for test '199'
 Exception : Attempt to access range [0,INSTR_ADDR).
 Disable instruction ' lwr_unalignedgetc' for test '200'
@@ -279,7 +282,7 @@ sub-word access to PUTC.
 Disable instruction ' sb_addrnull' for test '220'
 Exception : Attempt to access range [0,INSTR_ADDR).
 Disable instruction ' sb_getc' for test '221'
-sub-word access to GETC.
+Exception : Attempt to write to GETC
 Disable instruction ' sb_instr' for test '222'
 Exception : Attempt to write to instruction memory.
 Disable instruction ' sb_instrnop' for test '223'
@@ -297,7 +300,7 @@ sub-word access to PUTC.
 Disable instruction ' sh_addrnull' for test '231'
 Exception : Attempt to access range [0,INSTR_ADDR).
 Disable instruction ' sh_getc' for test '232'
-sub-word access to GETC.
+Exception : Attempt to write to GETC
 Disable instruction ' sh_instr' for test '233'
 Exception : Attempt to write to instruction memory.
 Disable instruction ' sh_instrnop' for test '234'
@@ -379,6 +382,7 @@ Disable instruction ' sw3' for test '299'
 Disable instruction ' sw_addrnull' for test '300'
 Exception : Attempt to access range [0,INSTR_ADDR).
 Disable instruction ' sw_getc' for test '301'
+Exception : Attempt to write to GETC
 Disable instruction ' sw_instr' for test '302'
 Exception : Attempt to write to instruction memory.
 Disable instruction ' sw_instrnop' for test '303'
